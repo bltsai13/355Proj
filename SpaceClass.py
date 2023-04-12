@@ -1,0 +1,31 @@
+class Space():
+    def __init__(self, spaceName, move2, move3, move4, move5, move6, move7, move8, move9, move10, move11, move12, back3, nearestRetro, nearestFE, baseRent, rent1House, rent2House, rent3House, rent4House, rentHotel, buyCost, houseCost):
+        self.spaceName = spaceName
+        self.move2 = move2
+        self.move3 = move3
+        self.move4 = move4
+        self.move5 = move5
+        self.move6 = move6
+        self.move7 = move7
+        self.move8 = move8
+        self.move9 = move9
+        self.move10 = move10
+        self.move11 = move11
+        self.move12 = move12
+        self.back3 = back3
+        self.nearestRetro = nearestRetro
+        self.nearestFE = nearestFE
+        self.rent = baseRent
+        self.baseRent = baseRent
+        self.buyCost = buyCost
+        self.mortgageValue = buyCost/2
+        self.monopolyValue = baseRent * 2
+        self.rent1House = rent1House
+        self.rent2House = rent2House
+        self.rent3House = rent3House
+        self.rent4House = rent4House
+        self.rentHotel = rentHotel
+        self.houseCost = houseCost
+        self.isMortgaged = False
+        self.owner = None
+        self.numHouses = 0
