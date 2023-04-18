@@ -373,15 +373,30 @@ while gaming:
                     pygame.draw.rect(monopolyBoard, WHITE, [500, 600, 150, 50])
                     p2Text = font.render(players[3].playerName + "\nCash: " + str(players[3].money), True, BLACK)
                     monopolyBoard.blit(p2Text, (505, 610))
-            activePlayer.rollDice()
-            players[0].getNewBoardPos(monopolyBoard, players[0], 0, players, drawPiles, activePlayer)
-            players[1].getNewBoardPos(monopolyBoard, players[1], 1, players, drawPiles, activePlayer)
-            if len(players) >= 3:
-                players[0].getNewBoardPos(monopolyBoard, players[2], 2, players, drawPiles, activePlayer)
-                if len(players) == 4:
-                    players[0].getNewBoardPos(monopolyBoard, players[3], 3, players, drawPiles, activePlayer)
+            if activePlayer.isBankrupt == False:
+                activePlayer.rollDice()
+                players[0].getNewBoardPos(monopolyBoard, players[0], 0, players, drawPiles, activePlayer)
+                players[1].getNewBoardPos(monopolyBoard, players[1], 1, players, drawPiles, activePlayer)
+                if len(players) >= 3:
+                    players[0].getNewBoardPos(monopolyBoard, players[2], 2, players, drawPiles, activePlayer)
+                    if len(players) == 4:
+                        players[0].getNewBoardPos(monopolyBoard, players[3], 3, players, drawPiles, activePlayer)
+                if activePlayer.money < 0:
+                    activePlayer.isBankrupt = True
+                    #calculate everyone's total net worth and decide winner
+                    winner = players[0]
+                    maxWorth = players[0].calcNetWorth()
+                    for player in players:
+                        netWorth = player.calcNetWorth()
+                        if netWorth > maxWorth:
+                            winner = player
+                            max = netWorth
+                    monopolyBoard.fill(WHITE)
+                    winnerText = font.render("The winner is " + winner.playerName + "!")
+                    monopolyBoard.blit(winnerText, (500, 500))
                 
-            if activePlayer.rolledDoubles == False or activePlayer.inJail == True:
+                
+            if activePlayer.rolledDoubles == False or activePlayer.inJail == True or activePlayer.isBankrupt == True:
                 playerIndex = (playerIndex + 1) % numPlayers
                 activePlayer = players[playerIndex]
 

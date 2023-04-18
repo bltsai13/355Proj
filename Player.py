@@ -145,6 +145,8 @@ class Player:
                 board.blit(self.p3Img, (550, 940))
             else:
                 board.blit(self.p4Img, (590, 940))
+            if thisPlayer == activePlayer:
+                thisPlayer.money -= 200
         elif thisPlayer.currentSpace.spaceName == "Marth":
             if index == 0:
                 board.blit(self.p1Img, (470, 900))
@@ -462,6 +464,8 @@ class Player:
                 board.blit(self.p3Img, (900, 710))
             else:
                 board.blit(self.p4Img, (930, 740))
+            if thisPlayer == activePlayer:
+                thisPlayer.money -= 100
         elif thisPlayer.currentSpace.spaceName == "Mythra":
             if index == 0:
                 board.blit(self.p1Img, (900, 790))
@@ -471,3 +475,13 @@ class Player:
                 board.blit(self.p3Img, (900, 790))
             else:
                 board.blit(self.p4Img, (930, 820))
+    def calcNetWorth(self):
+        total = 0
+        total += self.money
+        for property in self.properties:
+            if property.isMortgaged:
+                total += property.mortgageValue
+            else:
+                total += property.buyCost
+            total += (property.numHouses * property.houseCost)
+        return total
