@@ -6,7 +6,6 @@ from SpaceClass import Space
 from ImageModifier import ImageModifier
 import GameWindows
 from Player import Player
-import tkinter
 from CardStacks import cardStacks
 
 BOARDWIDTH = 1000
@@ -35,10 +34,21 @@ for i in range(numPlayers):
     players.append(Player(playerNames[i], i+1))
 for player in players:
     print("Player " + player.playerName + "has turn order " + str(player.turnOrder))
-drawPiles = cardStacks(numPlayers)  
 spaces=[Space("Go", "PokeBall1", "Little Mac", "Low Tier Tax", "Marth", "King Dedede", "AssistTrophy1", "Kirby", "Meta Knight", "Jail", "Jigglypuff", "Pac Man", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0), Space("Ganondorf", "Little Mac", "Low Tier Tax", "Marth", "King Dedede", "AssistTrophy1", "Kirby", "Meta Knight", "Jail", "Jigglypuff", "Pac Man", "Mewtwo", "", "", "", 2, 10, 30, 90, 160, 250, 60, 50), Space("PokeBall1", "Low Tier Tax", "Marth", "King Dedede", "AssistTrophy1", "Kirby", "Meta Knight", "Jail", "Jigglypuff", "Pac Man", "Mewtwo", "Incineroar", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0), Space("Little Mac", "Marth", "King Dedede", "AssistTrophy1", "Kirby", "Meta Knight", "Jail", "Jigglypuff", "Pac Man", "Mewtwo", "Incineroar", "Ike", "", "", "", 4, 20, 60, 180, 320, 450, 60, 50), Space("Low Tier Tax", "King Dedede", "AssistTrophy1", "Kirby", "Meta Knight", "Jail", "Jigglypuff", "Pac Man", "Mewtwo", "Incineroar", "Ike", "Young Link", "", "", "", 200, 0, 0, 0, 0, 0, 0, 0), Space("Marth", "AssistTrophy1", "Kirby", "Meta Knight", "Jail", "Jigglypuff", "Pac Man", "Mewtwo", "Incineroar", "Ike", "Young Link", "PokeBall2", "", "", "", 25, 25, 50, 100, 200, 200, 200, 0), Space("King Dedede", "Kirby", "Meta Knight", "Jail", "Jigglypuff", "Pac Man", "Mewtwo", "Incineroar", "Ike", "Young Link", "PokeBall2", "Toon Link", "", "", "", 6, 30, 90, 270, 440, 550, 100, 50), Space("AssistTrophy1", "Meta Knight", "Jail", "Jigglypuff", "Pac Man", "Mewtwo", "Incineroar", "Ike", "Young Link", "PokeBall2", "Toon Link", "Link", "Low Tier Tax", "Pac Man", "Marth", 0, 0, 0,0, 0, 0, 0, 0), Space("Kirby", "Jail", "Jigglypuff", "Pac Man", "Mewtwo", "Incineroar", "Ike", "Young Link", "PokeBall2", "Toon Link", "Link", "Free Parking", "", "", "", 6, 30, 90, 270, 400, 550, 100, 50), Space("Meta Knight", "Jigglypuff", "Pac Man", "Mewtwo", "Incineroar", "Ike", "Young Link", "PokeBall2", "Toon Link", "Link", "Free Parking", "Falco", "", "", "", 8, 40, 100, 300, 450, 600, 120, 50), Space("Jail", "Pac Man", "Mewtwo", "Incineroar", "Ike", "Young Link", "PokeBall2", "Toon Link", "Link", "Free Parking", "Falco", "AssistTrophy2", "", "", "", 0, 0, 0, 0,0 ,0 ,0, 0), Space("Jigglypuff", "Mewtwo", "Incineroar", "Ike", "Young Link", "PokeBall2", "Toon Link", "Link", "Free Parking", "Falco", "AssistTrophy2", "Wolf", "", "", "", 10, 50, 150, 450, 625, 750, 140, 100), Space("Pac Man", "Incineroar", "Ike", "Young Link", "PokeBall2", "Toon Link", "Link", "Free Parking", "Falco", "AssistTrophy2", "Wolf", "Fox", "", "", "", 4, 4, 4, 4, 4, 4, 150, 0), Space("Mewtwo", "Ike", "Young Link", "PokeBall2", "Toon Link", "Link", "Free Parking", "Falco", "AssistTrophy2", "Wolf", "Fox", "Roy", "", "", "", 10, 50, 150, 450, 625, 750, 140, 100), Space("Incineroar", "Young Link", "PokeBall2", "Toon Link", "Link", "Free Parking", "Falco", "AssistTrophy2", "Wolf", "Fox", "Roy", "Samus", "", "", "", 12, 60, 180, 500, 700, 900, 160, 100), Space("Ike", "PokeBall2", "Toon Link", "Link", "Free Parking", "Falco", "AssistTrophy2", "Wolf", "Fox", "Roy", "Samus", "Dark Samus", "", "", "", 25, 25, 50, 100, 200, 200, 200, 0), Space("Young Link", "Toon Link", "Link", "Free Parking", "Falco", "AssistTrophy2", "Wolf", "Fox", "Roy", "Samus", "Dark Samus", "Mr Game & Watch", "", "", "", 14, 70, 200, 550, 750, 950, 180, 100), Space("PokeBall2", "Link", "Free Parking", "Falco", "AssistTrophy2", "Wolf", "Fox", "Roy", "Samus", "Dark Samus", "Mr Game & Watch", "Zero Suit Samus", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0), Space("Toon Link", "Free Parking", "Falco", "AssistTrophy2", "Wolf", "Fox", "Roy", "Samus", "Dark Samus", "Mr Game & Watch", "Zero Suit Samus", "Go To Jail", "", "", "", 14, 70, 200, 550, 750, 950, 180, 100), Space("Link", "Falco", "AssistTrophy2", "Wolf", "Fox", "Roy", "Samus", "Dark Samus", "Mr Game & Watch", "Zero Suit Samus", "Go To Jail", "Ryu", "", "", "", 16, 80, 220, 600, 800, 1000, 200, 100), Space("Free Parking", "AssistTrophy2", "Wolf", "Fox", "Roy", "Samus", "Dark Samus", "Mr Game & Watch", "Zero Suit Samus", "Go To Jail", "Ryu", "Terry", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0), Space("Falco", "Wolf", "Fox", "Roy", "Samus", "Dark Samus", "Mr Game & Watch", "Zero Suit Samus", "Go To Jail", "Ryu", "Terry", "PokeBall3", "", "", "", 18, 90, 250, 700, 875, 1050, 220, 150), Space("AssistTrophy2", "Fox", "Roy", "Samus", "Dark Samus", "Mr Game & Watch", "Zero Suit Samus", "Go To Jail", "Ryu", "Terry", "PokeBall3", "Kazuya", "Link", "Mr Game & Watch", "Roy", 0, 0, 0, 0, 0, 0, 0, 0), Space("Wolf", "Roy", "Samus", "Dark Samus", "Mr Game & Watch", "Zero Suit Samus", "Go To Jail", "Ryu", "Terry", "PokeBall3", "Kazuya", "Byleth", "", "", "", 18, 90, 250, 700, 875, 1050, 220, 150), Space("Fox", "Samus", "Dark Samus", "Mr Game & Watch", "Zero Suit Samus", "Go To Jail", "Ryu", "Terry", "PokeBall3", "Kazuya", "Byleth", "AssistTrophy3", "", "", "", 20, 100, 300, 750, 925, 1100, 240, 150), Space("Roy", "Dark Samus", "Mr Game & Watch", "Zero Suit Samus", "Go To Jail", "Ryu", "Terry", "PokeBall3", "Kazuya", "Byleth", "AssistTrophy3", "Pyra", "", "", "", 25,25, 50, 100, 200, 200, 200, 0), Space("Samus", "Mr Game & Watch", "Zero Suit Samus", "Go To Jail", "Ryu", "Terry", "PokeBall3", "Kazuya", "Byleth", "AssistTrophy3", "Pyra", "DLC Tax", "", "", "", 22, 110, 330, 800, 975, 1150, 260, 150), Space("Dark Samus", "Zero Suit Samus", "Go To Jail", "Ryu", "Terry", "PokeBall3", "Kazuya", "Byleth", "AssistTrophy3", "Pyra", "DLC Tax", "Mythra", "", "", "", 22, 110, 330, 800, 975, 1150, 260, 150), Space("Mr Game & Watch", "Go To Jail", "Ryu", "Terry", "PokeBall3", "Kazuya", "Byleth", "AssistTrophy3", "Pyra", "DLC Tax", "Mythra", "Go", "", "", "", 4, 4, 4, 4, 4, 4, 150, 0), Space("Zero Suit Samus", "Ryu", "Terry", "PokeBall3", "Kazuya", "Byleth", "AssistTrophy3", "Pyra", "DLC Tax", "Mythra", "Go", "Ganondorf", "", "", "", 24, 120, 360, 850, 1025, 1200, 280, 150), Space("Go To Jail", "Terry", "PokeBall3", "Kazuya", "Byleth", "AssistTrophy3", "Pyra", "DLC Tax", "Mythra", "Go", "Ganondorf", "PokeBall1", "", "", "", 0, 0, 0, 0,0 ,0, 0, 0), Space("Ryu", "PokeBall3", "Kazuya", "Byleth", "AssistTrophy3", "Pyra", "DLC Tax", "Mythra", "Go", "Ganondorf", "PokeBall1", "Little Mac", "", "", "", 26, 130, 390, 900, 1100, 1275, 300, 200), Space("Terry", "Kazuya", "Byleth", "AssistTrophy3", "Pyra", "DLC Tax", "Mythra", "Go", "Ganondorf", "PokeBall1", "Little Mac", "Low Tier Tax", "", "", "", 26, 130, 390, 900, 1100, 1275, 300, 200), Space("PokeBall3", "Byleth", "AssistTrophy3", "Pyra", "DLC Tax", "Mythra", "Go", "Ganondorf", "PokeBall1", "Little Mac", "Low Tier Tax", "Marth", "", "", "", 0, 0, 0, 0,0 ,0, 0, 0), Space("Kazuya", "AssistTrophy3", "Pyra", "DLC Tax", "Mythra", "Go", "Ganondorf", "PokeBall1", "Little Mac", "Low Tier Tax", "Marth", "King Dedede", "", "", "", 28, 150, 450, 1000, 1200, 1400, 300, 200), Space("Byleth", "Pyra", "DLC Tax", "Mythra", "Go", "Ganondorf", "PokeBall1", "Little Mac", "Low Tier Tax", "Marth", "King Dedede", "AssistTrophy1", "", "", "", 25, 25, 50, 100, 200, 200, 200, 0), Space("AssistTrophy3", "DLC Tax", "Mythra", "Go", "Ganondorf", "PokeBall1", "Little Mac", "Low Tier Tax", "Marth", "King Dedede", "AssistTrophy1", "Kirby", "PokeBall3", "Pac Man","Marth", 0, 0, 0,0 ,0 ,0, 0, 0), Space("Pyra", "Mythra", "Go", "Ganondorf", "PokeBall1", "Little Mac", "Low Tier Tax", "Marth", "King Dedede", "AssistTrophy1", "Kirby", "Meta Knight", "", "", "", 35, 175, 500, 1100, 1300, 1500, 350, 200), Space("DLC Tax", "Go", "Ganondorf", "PokeBall1", "Little Mac", "Low Tier Tax", "Marth", "King Dedede", "AssistTrophy1", "Kirby", "Meta Knight", "Jail", "", "", "", 100, 0, 0, 0,0 ,0, 0, 0), Space("Mythra", "Ganondorf", "PokeBall1", "Little Mac", "Low Tier Tax", "Marth", "King Dedede", "AssistTrophy1", "Kirby", "Meta Knight", "Jail", "Jigglypuff", "", "", "", 50, 200, 600, 1400, 1700, 2000, 400, 200)]
+drawPiles = cardStacks(numPlayers, spaces, monopolyBoard)  
+for player in players:
+    player.currentSpace = spaces[0]
+    player.spaces = spaces
+playerIndex = 0
+activePlayer = players[playerIndex]
 p1Img = pygame.image.load('1Num.png').convert()
-p1Img = pygame.transform.scale(p1Img, (30, 30))
+p1Img = pygame.transform.scale(p1Img, (20, 20))
+p2Img = pygame.image.load('2Num.png').convert()
+p2Img = pygame.transform.scale(p2Img, (20, 20))
+p3Img = pygame.image.load('3Num.png').convert()
+p3Img = pygame.transform.scale(p3Img, (20, 20))
+p4Img = pygame.image.load('4Num.png').convert()
+p4Img = pygame.transform.scale(p4Img, (20, 20))
 font = pygame.font.SysFont('timesnewroman.ttf', 16)
 smallFont = pygame.font.SysFont('timesnewroman.ttf', 13)
 imageModifier = ImageModifier()
@@ -237,6 +247,12 @@ if len(players) >= 3:
         pygame.draw.rect(monopolyBoard, WHITE, [500, 600, 150, 75])
         p2Text = font.render(players[3].playerName + "\nCash: " + str(players[3].money), True, BLACK)
         monopolyBoard.blit(p2Text, (505, 610))
+players[0].getNewBoardPos(monopolyBoard, players[0], 0, players, drawPiles, activePlayer)
+players[1].getNewBoardPos(monopolyBoard, players[1], 1, players, drawPiles, activePlayer)
+if len(players) >= 3:
+    players[0].getNewBoardPos(monopolyBoard, players[2], 2, players, drawPiles, activePlayer)
+    if len(players) == 4:
+        players[0].getNewBoardPos(monopolyBoard, players[3], 3, players, drawPiles, activePlayer)
 pygame.display.update()
 
 while gaming:
@@ -357,91 +373,17 @@ while gaming:
                     pygame.draw.rect(monopolyBoard, WHITE, [500, 600, 150, 50])
                     p2Text = font.render(players[3].playerName + "\nCash: " + str(players[3].money), True, BLACK)
                     monopolyBoard.blit(p2Text, (505, 610))
-            p1MvmtClass.rollDice()
-            if p1MvmtClass.currentSpace.spaceName == "Go":
-                monopolyBoard.blit(p1Img, (940, 960))
-            elif p1MvmtClass.currentSpace.spaceName == "Little Mac":
-                monopolyBoard.blit(p1Img, (820, 960))
-            elif p1MvmtClass.currentSpace.spaceName == "PokeBall1":
-                monopolyBoard.blit(p1Img, (740, 960))
-                drawPiles.drawPokeBall(players[0], players, spaces)
-            elif p1MvmtClass.currentSpace.spaceName == "Ganondorf":
-                monopolyBoard.blit(p1Img, (660, 960))
-            elif p1MvmtClass.currentSpace.spaceName == "Low Tier Tax":
-                monopolyBoard.blit(p1Img, (580, 960))
-            elif p1MvmtClass.currentSpace.spaceName == "Marth":
-                monopolyBoard.blit(p1Img, (500, 960))
-            elif p1MvmtClass.currentSpace.spaceName == "King Dedede":
-                monopolyBoard.blit(p1Img, (420, 960))
-            elif p1MvmtClass.currentSpace.spaceName == "AssistTrophy1":
-                monopolyBoard.blit(p1Img, (340, 960))
-                drawPiles.drawAssistTrophy(players[0], players, spaces)
-            elif p1MvmtClass.currentSpace.spaceName == "Kirby":
-                monopolyBoard.blit(p1Img, (260, 960))
-            elif p1MvmtClass.currentSpace.spaceName == "Meta Knight":
-                monopolyBoard.blit(p1Img, (180, 960))
-            elif p1MvmtClass.currentSpace.spaceName == "Jail" or p1MvmtClass.currentSpace.spaceName == "Go To Jail":
-                monopolyBoard.blit(p1Img, (10, 970))
-            elif p1MvmtClass.currentSpace.spaceName == "Jigglypuff":
-                monopolyBoard.blit(p1Img, (80, 810))
-            elif p1MvmtClass.currentSpace.spaceName == "Pac Man":
-                monopolyBoard.blit(p1Img, (80, 730))
-            elif p1MvmtClass.currentSpace.spaceName == "Mewtwo":
-                monopolyBoard.blit(p1Img, (80, 650))
-            elif p1MvmtClass.currentSpace.spaceName == "Incineroar":
-                monopolyBoard.blit(p1Img, (80, 570))
-            elif p1MvmtClass.currentSpace.spaceName == "Ike":
-                monopolyBoard.blit(p1Img, (80, 490))
-            elif p1MvmtClass.currentSpace.spaceName == "Young Link":
-                monopolyBoard.blit(p1Img, (80, 410))
-            elif p1MvmtClass.currentSpace.spaceName == "PokeBall2":
-                monopolyBoard.blit(p1Img, (80, 330))
-                drawPiles.drawPokeBall(players[0], players, spaces)
-            elif p1MvmtClass.currentSpace.spaceName == "Toon Link":
-                monopolyBoard.blit(p1Img, (80, 250))
-            elif p1MvmtClass.currentSpace.spaceName == "Link":
-                monopolyBoard.blit(p1Img, (80, 170))
-            elif p1MvmtClass.currentSpace.spaceName == "Free Parking":
-                monopolyBoard.blit(p1Img, (80, 80))
-            elif p1MvmtClass.currentSpace.spaceName == "Falco":
-                monopolyBoard.blit(p1Img, (160, 80))
-            elif p1MvmtClass.currentSpace.spaceName == "AssistTrophy2":
-                monopolyBoard.blit(p1Img, (240, 80))
-                drawPiles.drawAssistTrophy(players[0], players, spaces)
-            elif p1MvmtClass.currentSpace.spaceName == "Wolf":
-                monopolyBoard.blit(p1Img, (320, 80))
-            elif p1MvmtClass.currentSpace.spaceName == "Fox":
-                monopolyBoard.blit(p1Img, (400, 80))
-            elif p1MvmtClass.currentSpace.spaceName == "Roy":
-                monopolyBoard.blit(p1Img, (480, 80))
-            elif p1MvmtClass.currentSpace.spaceName == "Samus":
-                monopolyBoard.blit(p1Img, (560, 80))
-            elif p1MvmtClass.currentSpace.spaceName == "Dark Samus":
-                monopolyBoard.blit(p1Img, (640, 80))
-            elif p1MvmtClass.currentSpace.spaceName == "Mr Game & Watch":
-                monopolyBoard.blit(p1Img, (720, 80))
-            elif p1MvmtClass.currentSpace.spaceName == "Zero Suit Samus":
-                monopolyBoard.blit(p1Img, (800, 80))
-            elif p1MvmtClass.currentSpace.spaceName == "Ryu":
-                monopolyBoard.blit(p1Img, (940, 180))
-            elif p1MvmtClass.currentSpace.spaceName == "Terry":
-                monopolyBoard.blit(p1Img, (940, 260))
-            elif p1MvmtClass.currentSpace.spaceName == "PokeBall3":
-                monopolyBoard.blit(p1Img, (940, 340))
-                drawPiles.drawPokeBall(players[0], players, spaces)
-            elif p1MvmtClass.currentSpace.spaceName == "Kazuya":
-                monopolyBoard.blit(p1Img, (940, 420))
-            elif p1MvmtClass.currentSpace.spaceName == "Byleth":
-                monopolyBoard.blit(p1Img, (940, 500))
-            elif p1MvmtClass.currentSpace.spaceName == "AssistTrophy3":
-                monopolyBoard.blit(p1Img, (940, 580))
-                drawPiles.drawAssistTrophy(players[0], players, spaces)
-            elif p1MvmtClass.currentSpace.spaceName == "Pyra":
-                monopolyBoard.blit(p1Img, (940, 660))
-            elif p1MvmtClass.currentSpace.spaceName == "DLC Tax":
-                monopolyBoard.blit(p1Img, (940, 740))
-            elif p1MvmtClass.currentSpace.spaceName == "Mythra":
-                monopolyBoard.blit(p1Img, (940, 820))
+            activePlayer.rollDice()
+            players[0].getNewBoardPos(monopolyBoard, players[0], 0, players, drawPiles, activePlayer)
+            players[1].getNewBoardPos(monopolyBoard, players[1], 1, players, drawPiles, activePlayer)
+            if len(players) >= 3:
+                players[0].getNewBoardPos(monopolyBoard, players[2], 2, players, drawPiles, activePlayer)
+                if len(players) == 4:
+                    players[0].getNewBoardPos(monopolyBoard, players[3], 3, players, drawPiles, activePlayer)
+                
+            if activePlayer.rolledDoubles == False or activePlayer.inJail == True:
+                playerIndex = (playerIndex + 1) % numPlayers
+                activePlayer = players[playerIndex]
 
             pygame.display.update()
 
