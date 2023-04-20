@@ -24,7 +24,7 @@ class cardStacks:
              return space
 
 
-    def drawAssistTrophy(self, activePlayer, allPlayers):
+    def drawAssistTrophy(self, activePlayer, allPlayers, roll):
         playerIndex = -1
         for i in range(len(allPlayers)):
             if activePlayer == allPlayers[i]:
@@ -41,6 +41,7 @@ class cardStacks:
                 allPlayers[playerIndex].money += 200
             else:
                 allPlayers[playerIndex].currentSpace = self.spaces[len(self.spaces)-1]
+            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
             print("1")
         elif selectedCard.text == "Advance to GO (Collect $200)":
             allPlayers[playerIndex].currentSpace = self.spaces[0]
@@ -50,27 +51,15 @@ class cardStacks:
             for i in range(24, 40):
                 if allPlayers[playerIndex].currentSpace == self.spaces[i]:
                     allPlayers[playerIndex].money += 200
-                    break
             allPlayers[playerIndex].currentSpace = self.spaces[24]
-            for i in range(len(allPlayers)):
-                if i != playerIndex:
-                    if ((self.spaces[24] in allPlayers[i].properties) & self.spaces[24].isMortgaged == False):
-                        allPlayers[i].money += self.spaces[24].rent
-                        allPlayers[playerIndex].money -= self.spaces[24].rent
-                        break
+            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
             print("3")
         elif selectedCard.text == "Advance to Jigglypuff. If you pass GO, collect $200":
             for i in range(11, 40):
                 if allPlayers[playerIndex].currentSpace == self.spaces[i]:
                     allPlayers[playerIndex].money += 200
-                    break
             allPlayers[playerIndex].currentSpace = self.spaces[11]
-            for i in range(len(allPlayers)):
-                if i != playerIndex:
-                    if self.spaces[11] in allPlayers[i].properties & self.spaces[11].isMortgaged == False:
-                        allPlayers[i].money += self.spaces[11].rent
-                        allPlayers[playerIndex].money -= self.spaces[11].rent
-                        break
+            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
             print("4")
         elif selectedCard.text == "Advance to the nearest Fire Emblem Character. If owned, pay owner double rent.":
             origPos = self.spaces.index(allPlayers[playerIndex].currentSpace)
@@ -78,12 +67,7 @@ class cardStacks:
             if origPos > newPos:
                 allPlayers[playerIndex].money += 200
             allPlayers[playerIndex].currentSpace = self.findSpace(allPlayers[playerIndex].currentSpace.nearestFE)
-            for i in range(len(allPlayers)):
-                if i != playerIndex:
-                    if allPlayers[i].currentSpace in allPlayers[i].properties & allPlayers[i].currentSpace.isMortgaged == False:
-                        allPlayers[i].money += allPlayers[i].currentSpace.rent
-                        allPlayers[playerIndex].money -= allPlayers[i].currentSpace.rent
-                        break
+            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
             print("5")
         elif selectedCard.text == "Advance to the nearest Retro Character. If owned, pay owner ten times your dice roll.":
             origPos = self.spaces.index(allPlayers[playerIndex].currentSpace)
@@ -91,12 +75,7 @@ class cardStacks:
             if origPos > newPos:
                 allPlayers[playerIndex].money += 200
             allPlayers[playerIndex].currentSpace = self.findSpace(allPlayers[playerIndex].currentSpace.nearestRetro)
-            for i in range(len(allPlayers)):
-                if i != playerIndex:
-                    if ((allPlayers[i].currentSpace in allPlayers[i].properties) & (allPlayers[i].currentSpace.isMortgaged == False)):
-                        allPlayers[i].money += allPlayers[i].currentSpace.rent
-                        allPlayers[playerIndex].money -= allPlayers[i].currentSpace.rent
-                        break
+            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
             print("6")
         elif selectedCard.text == "Bank pays you dividend of $50":
             allPlayers[playerIndex].money += 50
@@ -106,6 +85,12 @@ class cardStacks:
             print("8")
         elif selectedCard.text == "Go back 3 spaces":
             allPlayers[playerIndex].currentSpace = self.spaces[self.spaces.index(allPlayers[playerIndex].currentSpace) - 3]
+            if allPlayers[playerIndex].currentSpace.spaceName == "PokeBall3":
+                self.drawPokeBall(activePlayer, allPlayers)
+            elif allPlayers[playerIndex].currentSpace.spaceName == "Low Tier Tax":
+                activePlayer.money -= 200
+            else:
+                allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
             print("9")
         elif selectedCard.text == "Go directly to jail. Do not pass GO, do not collect $200.":
             allPlayers[playerIndex].currentSpace = self.findSpace("Jail")
@@ -129,12 +114,7 @@ class cardStacks:
             if origPos > 5:
                 allPlayers[playerIndex].money += 200
             allPlayers[playerIndex].currentSpace = self.findSpace("Marth")
-            for i in range(len(allPlayers)):
-                if i != playerIndex:
-                    if ((allPlayers[i].currentSpace in allPlayers[i].properties) & (allPlayers[i].currentSpace.isMortgaged == False)):
-                        allPlayers[i].money += allPlayers[i].currentSpace.rent
-                        allPlayers[playerIndex].money -= allPlayers[i].currentSpace.rent
-                        break
+            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
             print("13")
         elif selectedCard.text == "Your faulty adapter broke everyone's controllers. Pay everyone $50":
             for player in allPlayers:
@@ -147,14 +127,12 @@ class cardStacks:
             print("15")
         messageText = self.font.render(selectedCard.text, True, self.BLACK)
         textRect = messageText.get_rect()
-        textRect.center = (500, 700)
+        textRect.center = (500, 750)
         buttonText = self.smallFont.render("OK", True, self.BLACK)
         buttonRect = buttonText.get_rect()
         buttonRect.center = (500, 800)
         self.surface.blit(buttonText, buttonRect)
         self.surface.blit(messageText, textRect)
-
-        print(buttonRect.x, " ", buttonRect.y, " ", buttonRect.width, " ", buttonRect.height)
         pygame.display.update()
         isDisplayed = True
 
@@ -164,14 +142,10 @@ class cardStacks:
                     print("bruh")
                     isDisplayed = False
                     return
-                    #pygame.display.quit()
-                    #exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if buttonRect.collidepoint(event.pos):
                         print("bruh2")
                         isDisplayed = False
-                        #pygame.display.quit()
-                        #exit()
                         return
 
 
