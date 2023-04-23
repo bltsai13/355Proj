@@ -1,7 +1,7 @@
-from MovementFile import movementLocation
 from random import randint
 import pygame
 from ImageModifier import ImageModifier
+from GameWindows import gameWindows
 class Player:
     def __init__(self, playerName, turnOrder):
         self.playerName = playerName
@@ -14,7 +14,7 @@ class Player:
         self.turnOrder = turnOrder
         self.rolledDoubles = False
         self.consecutiveDoubles = 0
-        self.currentSpace = movementLocation().spaces[0]
+        self.currentSpace = None
         self.spaces = None
         self.p1Img = pygame.image.load('1Num.png').convert()
         self.p1Img = pygame.transform.scale(self.p1Img, (20, 20))
@@ -32,10 +32,10 @@ class Player:
                 return space
     
     def newLocation(self, roll):
-        if self.consecutiveDoubles == 3 or roll == 0:
+        if self.consecutiveDoubles == 3 or ((roll[0] + roll[1]) == 0):
             self.inJail = True
             return "Jail"
-        match roll:
+        match (roll[0]+roll[1]):
             case 2:
                 print(self.currentSpace.move2)
                 return self.currentSpace.move2
@@ -72,6 +72,9 @@ class Player:
             
     def rollDice(self, board):
         imgMod = ImageModifier()
+        if ((self.inJail == True) & (self.hasGetOutOfJailFree == True)):
+            self.inJail = False
+            self.hasGetOutOfJailFree = False
         dice1Roll = randint(1,6)
         board.blit(imgMod.space_modifier("roll" +str(dice1Roll)+ ".jpg", 60, 60, 0), (400, 300))            
         dice2Roll = randint(1,6)
@@ -86,16 +89,21 @@ class Player:
         else:
             self.rolledDoubles = False
             self.consecutiveDoubles = 0
-        totalRoll = dice1Roll + dice2Roll
+        totalRoll = (dice1Roll,dice2Roll)
         if self.inJail:
             self.turnsInJail += 1
             if self.turnsInJail >= 3:
                 self.turnsInJail = 0
                 self.inJail = False
             else:
-                totalRoll = 0
+                totalRoll = (0,0)
                 print("You're still in jail!")
+        print(str(totalRoll[0]) + " " + str(totalRoll[1]))
+        origPos = self.spaces.index(self.currentSpace)
         self.currentSpace = self.findSpace(self.newLocation(totalRoll))
+        newPos = self.spaces.index(self.currentSpace)
+        if origPos > newPos:
+            self.money += 200
         if self.currentSpace.spaceName == 'Go To Jail':
             self.currentSpace = self.findSpace('Jail')
             self.inJail = True
@@ -105,438 +113,86 @@ class Player:
         
     def getNewBoardPos(self, board, thisPlayer, index, players, drawPiles, activePlayer, roll):
         if thisPlayer.currentSpace.spaceName == "Go":
-            if index == 0:
-                board.blit(self.p1Img, (880, 900))
-            elif index == 1:
-                board.blit(self.p2Img, (920, 900))
-            elif index == 2:
-                board.blit(self.p3Img, (880, 940))
-            else:
-                board.blit(self.p4Img, (920, 940))
+            self.setPlayerPos(board, index, 880, 900, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Ganondorf":
-            if index == 0:
-                board.blit(self.p1Img, (790, 900))
-            elif index == 1:
-                board.blit(self.p2Img, (830, 900))
-            elif index == 2:
-                board.blit(self.p3Img, (790, 940))
-            else:
-                board.blit(self.p4Img, (830, 940))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 790, 900, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "PokeBall1":
-            if index == 0:
-                board.blit(self.p1Img, (710, 900))
-            elif index == 1:
-                board.blit(self.p2Img, (750, 900))
-            elif index == 2:
-                board.blit(self.p3Img, (710, 940))
-            else:
-                board.blit(self.p4Img, (750, 940))
-            if thisPlayer == activePlayer:
-                drawPiles.drawPokeBall(thisPlayer, players)
+            self.setPlayerPos(board, index, 710, 900, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Little Mac":
-            if index == 0:
-                board.blit(self.p1Img, (630, 900))
-            elif index == 1:
-                board.blit(self.p2Img, (670, 900))
-            elif index == 2:
-                board.blit(self.p3Img, (630, 940))
-            else:
-                board.blit(self.p4Img, (670, 940))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 630, 900, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Low Tier Tax":
-            if index == 0:
-                board.blit(self.p1Img, (550, 900))
-            elif index == 1:
-                board.blit(self.p2Img, (590, 900))
-            elif index == 2:
-                board.blit(self.p3Img, (550, 940))
-            else:
-                board.blit(self.p4Img, (590, 940))
-            if thisPlayer == activePlayer:
-                thisPlayer.money -= 200
+            self.setPlayerPos(board, index, 550, 900, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Marth":
-            if index == 0:
-                board.blit(self.p1Img, (470, 900))
-            elif index == 1:
-                board.blit(self.p2Img, (510, 900))
-            elif index == 2:
-                board.blit(self.p3Img, (470, 940))
-            else:
-                board.blit(self.p4Img, (510, 940))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 470, 900, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "King Dedede":
-            if index == 0:
-                board.blit(self.p1Img, (390, 900))
-            elif index == 1:
-                board.blit(self.p2Img, (430, 900))
-            elif index == 2:
-                board.blit(self.p3Img, (390, 940))
-            else:
-                board.blit(self.p4Img, (430, 940))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 390, 900, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "AssistTrophy1":
-            if index == 0:
-                board.blit(self.p1Img, (310, 900))
-            elif index == 1:
-                board.blit(self.p2Img, (350, 900))
-            elif index == 2:
-                board.blit(self.p3Img, (310, 940))
-            else:
-                board.blit(self.p4Img, (350, 940))
-            if thisPlayer == activePlayer:
-                drawPiles.drawAssistTrophy(thisPlayer, players, roll)
+            self.setPlayerPos(board, index, 310, 900, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Kirby":
-            if index == 0:
-                board.blit(self.p1Img, (230, 900))
-            elif index == 1:
-                board.blit(self.p2Img, (270, 900))
-            elif index == 2:
-                board.blit(self.p3Img, (230, 940))
-            else:
-                board.blit(self.p4Img, (270, 940))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 230, 900, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Meta Knight":
-            if index == 0:
-                board.blit(self.p1Img, (150, 900))
-            elif index == 1:
-                board.blit(self.p2Img, (190, 900))
-            elif index == 2:
-                board.blit(self.p3Img, (150, 940))
-            else:
-                board.blit(self.p4Img, (190, 940))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 150, 900, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Jail" or thisPlayer.currentSpace.spaceName == "Go To Jail":
             if thisPlayer.inJail == False:
-                if index == 0:
-                    board.blit(self.p1Img, (10, 880))
-                elif index == 1:
-                    board.blit(self.p2Img, (10, 910))
-                elif index == 2:
-                    board.blit(self.p3Img, (10, 940))
-                else:
-                    board.blit(self.p4Img, (10, 970))
+                self.setPlayerPos(board, index, 10, 880, thisPlayer, activePlayer, drawPiles, players, roll)
             else:
-                if index == 0:
-                    board.blit(self.p1Img, (50, 880))
-                elif index == 1:
-                    board.blit(self.p2Img, (80, 880))
-                elif index == 2:
-                    board.blit(self.p3Img, (50, 910))
-                else:
-                    board.blit(self.p4Img, (80, 910))
+                self.setPlayerPos(board, index, 50, 880, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Jigglypuff":
-            if index == 0:
-                board.blit(self.p1Img, (40, 800))
-            elif index == 1:
-                board.blit(self.p2Img, (40, 800))
-            elif index == 2:
-                board.blit(self.p3Img, (70, 830))
-            else:
-                board.blit(self.p4Img, (70, 830))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 40, 800, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Pac Man":
-            if index == 0:
-                board.blit(self.p1Img, (40, 720))
-            elif index == 1:
-                board.blit(self.p2Img, (40, 750))
-            elif index == 2:
-                board.blit(self.p3Img, (70, 720))
-            else:
-                board.blit(self.p4Img, (70, 750))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 40, 720, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Mewtwo":
-            if index == 0:
-                board.blit(self.p1Img, (40, 640))
-            elif index == 1:
-                board.blit(self.p2Img, (40, 670))
-            elif index == 2:
-                board.blit(self.p3Img, (70, 640))
-            else:
-                board.blit(self.p4Img, (70, 670))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 40, 640, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Incineroar":
-            if index == 0:
-                board.blit(self.p1Img, (40, 560))
-            elif index == 1:
-                board.blit(self.p2Img, (40, 590))
-            elif index == 2:
-                board.blit(self.p3Img, (70, 560))
-            else:
-                board.blit(self.p4Img, (70, 590))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 40, 560, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Ike":
-            if index == 0:
-                board.blit(self.p1Img, (40, 480))
-            elif index == 1:
-                board.blit(self.p2Img, (40, 510))
-            elif index == 2:
-                board.blit(self.p3Img, (70, 480))
-            else:
-                board.blit(self.p4Img, (70, 510))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 40, 480, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Young Link":
-            if index == 0:
-                board.blit(self.p1Img, (40, 400))
-            elif index == 1:
-                board.blit(self.p2Img, (40, 430))
-            elif index == 2:
-                board.blit(self.p3Img, (70, 400))
-            else:
-                board.blit(self.p4Img, (70, 430))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 40, 400, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "PokeBall2":
-            if index == 0:
-                board.blit(self.p1Img, (40, 320))
-            elif index == 1:
-                board.blit(self.p2Img, (40, 350))
-            elif index == 2:
-                board.blit(self.p3Img, (70, 320))
-            else:
-                board.blit(self.p4Img, (70, 350))
-            if thisPlayer == activePlayer:
-                drawPiles.drawPokeBall(thisPlayer, players)
+            self.setPlayerPos(board, index, 40, 320, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Toon Link":
-            if index == 0:
-                board.blit(self.p1Img, (40, 240))
-            elif index == 1:
-                board.blit(self.p2Img, (40, 270))
-            elif index == 2:
-                board.blit(self.p3Img, (70, 240))
-            else:
-                board.blit(self.p4Img, (70, 270))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 40, 240, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Link":
-            if index == 0:
-                board.blit(self.p1Img, (40, 160))
-            elif index == 1:
-                board.blit(self.p2Img, (40, 190))
-            elif index == 2:
-                board.blit(self.p3Img, (70, 160))
-            else:
-                board.blit(self.p4Img, (70, 190))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 40, 160, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Free Parking":
-            if index == 0:
-                board.blit(self.p1Img, (40, 70))
-            elif index == 1:
-                board.blit(self.p2Img, (40, 100))
-            elif index == 2:
-                board.blit(self.p3Img, (70, 70))
-            else:
-                board.blit(self.p4Img, (70, 100))
+            self.setPlayerPos(board, index, 40, 70, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Falco":
-            if index == 0:
-                board.blit(self.p1Img, (160, 60))
-            elif index == 1:
-                board.blit(self.p2Img, (160, 90))
-            elif index == 2:
-                board.blit(self.p3Img, (190, 60))
-            else:
-                board.blit(self.p4Img, (190, 90))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 160, 60, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "AssistTrophy2":
-            if index == 0:
-                board.blit(self.p1Img, (240, 60))
-            elif index == 1:
-                board.blit(self.p2Img, (270, 90))
-            elif index == 2:
-                board.blit(self.p3Img, (240, 60))
-            else:
-                board.blit(self.p4Img, (270, 90))
-            if thisPlayer == activePlayer:
-                drawPiles.drawAssistTrophy(thisPlayer, players, roll)
+            self.setPlayerPos(board, index, 240, 60, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Wolf":
-            if index == 0:
-                board.blit(self.p1Img, (320, 60))
-            elif index == 1:
-                board.blit(self.p2Img, (350, 90))
-            elif index == 2:
-                board.blit(self.p3Img, (320, 60))
-            else:
-                board.blit(self.p4Img, (350, 90))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 320, 60, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Fox":
-            if index == 0:
-                board.blit(self.p1Img, (400, 60))
-            elif index == 1:
-                board.blit(self.p2Img, (430, 90))
-            elif index == 2:
-                board.blit(self.p3Img, (400, 60))
-            else:
-                board.blit(self.p4Img, (430, 90))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 400, 60, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Roy":
-            if index == 0:
-                board.blit(self.p1Img, (480, 60))
-            elif index == 1:
-                board.blit(self.p2Img, (510, 90))
-            elif index == 2:
-                board.blit(self.p3Img, (480, 60))
-            else:
-                board.blit(self.p4Img, (510, 90))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 480, 60, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Samus":
-            if index == 0:
-                board.blit(self.p1Img, (560, 60))
-            elif index == 1:
-                board.blit(self.p2Img, (590, 90))
-            elif index == 2:
-                board.blit(self.p3Img, (560, 60))
-            else:
-                board.blit(self.p4Img, (590, 90))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 560, 60, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Dark Samus":
-            if index == 0:
-                board.blit(self.p1Img, (640, 60))
-            elif index == 1:
-                board.blit(self.p2Img, (670, 90))
-            elif index == 2:
-                board.blit(self.p3Img, (640, 60))
-            else:
-                board.blit(self.p4Img, (670, 90))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 640, 60, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Mr Game & Watch":
-            if index == 0:
-                board.blit(self.p1Img, (720, 60))
-            elif index == 1:
-                board.blit(self.p2Img, (750, 90))
-            elif index == 2:
-                board.blit(self.p3Img, (720, 60))
-            else:
-                board.blit(self.p4Img, (750, 90))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 720, 60, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Zero Suit Samus":
-            if index == 0:
-                board.blit(self.p1Img, (800, 60))
-            elif index == 1:
-                board.blit(self.p2Img, (830, 90))
-            elif index == 2:
-                board.blit(self.p3Img, (800, 60))
-            else:
-                board.blit(self.p4Img, (830, 90))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 800, 60, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Ryu":
-            if index == 0:
-                board.blit(self.p1Img, (900, 150))
-            elif index == 1:
-                board.blit(self.p2Img, (930, 180))
-            elif index == 2:
-                board.blit(self.p3Img, (900, 150))
-            else:
-                board.blit(self.p4Img, (930, 180))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 900, 150, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Terry":
-            if index == 0:
-                board.blit(self.p1Img, (900, 230))
-            elif index == 1:
-                board.blit(self.p2Img, (930, 260))
-            elif index == 2:
-                board.blit(self.p3Img, (900, 230))
-            else:
-                board.blit(self.p4Img, (930, 260))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 900, 230, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "PokeBall3":
-            if index == 0:
-                board.blit(self.p1Img, (900, 310))
-            elif index == 1:
-                board.blit(self.p2Img, (930, 340))
-            elif index == 2:
-                board.blit(self.p3Img, (900, 310))
-            else:
-                board.blit(self.p4Img, (930, 340))
-            if thisPlayer == activePlayer:
-                drawPiles.drawPokeBall(thisPlayer, players)
+            self.setPlayerPos(board, index, 900, 310, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Kazuya":
-            if index == 0:
-                board.blit(self.p1Img, (900, 390))
-            elif index == 1:
-                board.blit(self.p2Img, (930, 420))
-            elif index == 2:
-                board.blit(self.p3Img, (900, 390))
-            else:
-                board.blit(self.p4Img, (930, 420))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 900, 390, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Byleth":
-            if index == 0:
-                board.blit(self.p1Img, (900, 470))
-            elif index == 1:
-                board.blit(self.p2Img, (930, 500))
-            elif index == 2:
-                board.blit(self.p3Img, (900, 470))
-            else:
-                board.blit(self.p4Img, (930, 500))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 900, 470, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "AssistTrophy3":
-            if index == 0:
-                board.blit(self.p1Img, (900, 550))
-            elif index == 1:
-                board.blit(self.p2Img, (930, 580))
-            elif index == 2:
-                board.blit(self.p3Img, (900, 550))
-            else:
-                board.blit(self.p4Img, (930, 580))
-            if thisPlayer == activePlayer:
-                drawPiles.drawAssistTrophy(thisPlayer, players, roll)
+            self.setPlayerPos(board, index, 900, 550, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Pyra":
-            if index == 0:
-                board.blit(self.p1Img, (900, 630))
-            elif index == 1:
-                board.blit(self.p2Img, (930, 660))
-            elif index == 2:
-                board.blit(self.p3Img, (900, 630))
-            else:
-                board.blit(self.p4Img, (930, 660))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 900, 630, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "DLC Tax":
-            if index == 0:
-                board.blit(self.p1Img, (900, 710))
-            elif index == 1:
-                board.blit(self.p2Img, (930, 740))
-            elif index == 2:
-                board.blit(self.p3Img, (900, 710))
-            else:
-                board.blit(self.p4Img, (930, 740))
-            if thisPlayer == activePlayer:
-                thisPlayer.money -= 100
+            self.setPlayerPos(board, index, 900, 710, thisPlayer, activePlayer, drawPiles, players, roll)
         elif thisPlayer.currentSpace.spaceName == "Mythra":
-            if index == 0:
-                board.blit(self.p1Img, (900, 790))
-            elif index == 1:
-                board.blit(self.p2Img, (930, 820))
-            elif index == 2:
-                board.blit(self.p3Img, (900, 790))
-            else:
-                board.blit(self.p4Img, (930, 820))
-            if thisPlayer == activePlayer:
-                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll)
+            self.setPlayerPos(board, index, 900, 790, thisPlayer, activePlayer, drawPiles, players, roll)
     def calcNetWorth(self):
         total = 0
         total += self.money
@@ -561,3 +217,50 @@ class Player:
             if ((property.spaceName == "Marth") or (property.spaceName == "Ike") or (property.spaceName == "Roy") or (property.spaceName == "Byleth")):
                 total += 1
         return total
+    def setPlayerPos(self, board, index, xCoord, yCoord, thisPlayer, activePlayer, drawPiles, players, roll):
+        gw = gameWindows(board)
+        imgMod = ImageModifier()
+        smallFont = pygame.font.SysFont(None, 16)
+        if ((self.inJail == False) & (self.currentSpace.spaceName == "Jail" or self.currentSpace.spaceName == "Go To Jail")):
+            if index == 0:
+                board.blit(self.p1Img, (xCoord, yCoord))
+            elif index == 1:
+                board.blit(self.p2Img, (xCoord, yCoord+20))
+            elif index == 2:
+                board.blit(self.p3Img, (xCoord, yCoord+40))
+            else:
+                board.blit(self.p4Img, (xCoord, yCoord+60))
+        else:           
+            if index == 0:
+                board.blit(self.p1Img, (xCoord, yCoord))
+            elif index == 1:
+                board.blit(self.p2Img, (xCoord, yCoord+30))
+            elif index == 2:
+                board.blit(self.p3Img, (xCoord+30, yCoord))
+            else:
+                board.blit(self.p4Img, (xCoord+30, yCoord+30))
+        if ((thisPlayer == activePlayer) & (roll != (0,0))) :
+            roll1 = "roll" +str(roll[0])+ ".jpg"
+            roll2 = "roll" +str(roll[1])+ ".jpg"
+            if (thisPlayer.currentSpace.spaceName in ["AssistTrophy1", "AssistTrophy2", "AssistTrophy3"]):
+                drawPiles.drawAssistTrophy(thisPlayer, players, roll)
+            elif (thisPlayer.currentSpace.spaceName in ["PokeBall1", "PokeBall2", "PokeBall3"]):
+                drawPiles.drawPokeBall(thisPlayer, players, roll)
+            elif (thisPlayer.currentSpace.spaceName in ["Free Parking", "Jail", "Go to Jail", "Go"]):
+                print("Nothing happens!")
+                gw.createBoard(smallFont, players, drawPiles, None)
+                if roll != (0,0):
+                    board.blit(imgMod.space_modifier(roll1, 60, 60, 0), (400, 300))            
+                    board.blit(imgMod.space_modifier(roll2, 60, 60, 0), (500, 300)) 
+            elif (thisPlayer.currentSpace.spaceName == "DLC Tax"):
+                thisPlayer.money -= 100
+                gw.createBoard(smallFont, players, drawPiles, None)
+                board.blit(imgMod.space_modifier(roll1, 60, 60, 0), (400, 300))            
+                board.blit(imgMod.space_modifier(roll2, 60, 60, 0), (500, 300)) 
+            elif (thisPlayer.currentSpace.spaceName == "Low Tier Tax"):
+                thisPlayer.money -= 200
+                gw.createBoard(smallFont, players, drawPiles, None)
+                board.blit(imgMod.space_modifier(roll1, 60, 60, 0), (400, 300))            
+                board.blit(imgMod.space_modifier(roll2, 60, 60, 0), (500, 300)) 
+            else:
+                thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll, players, drawPiles)

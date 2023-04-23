@@ -1,18 +1,19 @@
 from ChanceCommunityChestCard import Card
 from random import randint
-from MovementFile import movementLocation
+from ImageModifier import ImageModifier
 import pygame
+from GameWindows import gameWindows
 class cardStacks:
     def __init__(self, numPlayers, spaces, surface):
-        self.newAssistTrophyPile = [Card("Advance to Mythra, if you pass GO collect $200"), Card("Advance to GO (Collect $200)"), Card("Advance to Fox. If you pass GO, collect $200"), Card("Advance to Jigglypuff. If you pass GO, collect $200)"), Card("Advance to the nearest Fire Emblem Character. If owned, pay owner double rent."), Card("Advance to the nearest Fire Emblem Character. If owned, pay owner double rent."), Card("Advance to the nearest Retro Character. If owned, pay owner ten times your dice roll."), Card("Bank pays you dividend of $50"), Card("Get out of jail free"), Card("Go back 3 spaces"), Card("Go directly to jail. Do not pass GO, do not collect $200."), Card("Software update. For each house, pay $25. For each hotel, pay $100"), Card("Tournament fee, pay $15"), Card("Advance to Marth. If you pass GO, collect $200"), Card("Your faulty adapter broke everyone's controllers. Pay each player $50"), Card("You won a regional! Collect $150.")]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        self.newAssistTrophyPile = [Card("Advance to Mythra, if you pass GO collect $200"), Card("Advance to GO (Collect $200)"), Card("Advance to Fox. If you pass GO, collect $200"), Card("Advance to Jigglypuff. If you pass GO, collect $200"), Card("Advance to the nearest Fire Emblem Character. If owned, pay owner double rent."), Card("Advance to the nearest Fire Emblem Character. If owned, pay owner double rent."), Card("Advance to the nearest Retro Character. If owned, pay 10X dice roll."), Card("Bank pays you dividend of $50"), Card("Get out of jail free"), Card("Go back 3 spaces"), Card("Go directly to jail. Do not pass GO, do not collect $200."), Card("Software update. Pay $25 per house, $100 per hotel"), Card("Tournament fee, pay $15"), Card("Advance to Marth. If you pass GO, collect $200"), Card("Your faulty adapter broke everyone's controllers. Pay everyone $50"), Card("You won a regional! Collect $150.")]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
         self.usedAssistTrophyPile = []
-        self.newPokeBallPile = [Card("Advance to GO (Collect $200)"), Card("Win a major. Collect $200."), Card("Lose a money match. Pay $50"), Card("Your income from your combo video came in. Collect $50"), Card("Get out of jail free"), Card("Go directly to jail. Do not pass GO, do not collect $200"), Card("Win a major side bracket. Collect $100"), Card("Refund Steve & Kazuya DLC after they got banned. Collect $20"), Card("It's your birthday. Collect $10 from every player."), Card("Win a giveaway. Collect $100"), Card("Get caught throwing a crab in a tournament. Pay $100"), Card("Buy a new copy of Super Smash Bros Ultimate. Pay $50"), Card("Got to Elite Smash with your first character. Collect $25."), Card("Pay out tournament prize pot. Pay $40 per house owned and $115 per hotel owned."), Card("You placed in top 8 at a local. Collect $10"), Card("You got sponsored! Collect $100")]
+        self.newPokeBallPile = [Card("Advance to GO (Collect $200)"), Card("Win a major. Collect $200."), Card("Lose a money match. Pay $50"), Card("Your income from your combo video came in. Collect $50"), Card("Get out of jail free"), Card("Go directly to jail. Do not pass GO, do not collect $200"), Card("Win a major side bracket. Collect $100"), Card("Refund Steve & Kazuya DLC after they got banned. Collect $20"), Card("It's your birthday. Collect $10 from every player."), Card("Win a giveaway. Collect $100"), Card("Get caught throwing a crab in a tournament. Pay $100"), Card("Buy a new copy of Super Smash Bros Ultimate. Pay $50"), Card("Got to Elite Smash with your first character. Collect $25."), Card("Pay out tournament prize pot. Pay $40 per house, $115 per hotel."), Card("You placed in top 8 at a local. Collect $10"), Card("You got sponsored! Collect $100")]
         self.usedPokeBallPile = []
         self.numPlayers = numPlayers
         self.SCREENHEIGHT = 300
         self.SCREENWIDTH = 500
-        self.font = pygame.font.SysFont(None, 24)
-        self.smallFont = pygame.font.SysFont(None, 20)
+        self.font = pygame.font.SysFont(None, 20)
+        self.smallFont = pygame.font.SysFont(None, 16)
         self.BLACK = (0,0,0)
         self.spaces = spaces
         self.surface = surface
@@ -30,9 +31,23 @@ class cardStacks:
             if activePlayer == allPlayers[i]:
                 playerIndex = i
                 break
+        gw = gameWindows(self.surface)
+        imgMod = ImageModifier()
 
         selectedCard = self.newAssistTrophyPile.pop(randint(0, len(self.newAssistTrophyPile) - 1))
         self.usedAssistTrophyPile.append(selectedCard)
+        gw.createBoard(self.smallFont, allPlayers, self, None)
+        self.surface.blit(imgMod.space_modifier("roll" +str(roll[0])+ ".jpg", 60, 60, 0), (400, 300))            
+        self.surface.blit(imgMod.space_modifier("roll" +str(roll[1])+ ".jpg", 60, 60, 0), (500, 300)) 
+        messageText = self.font.render(selectedCard.text, True, self.BLACK)
+        textRect = messageText.get_rect()
+        textRect.center = (350, 750)
+        buttonText = self.smallFont.render("OK", True, self.BLACK)
+        buttonRect = buttonText.get_rect()
+        buttonRect.center = (350, 800)
+        self.surface.blit(buttonText, buttonRect)
+        self.surface.blit(messageText, textRect)
+        pygame.display.update()
         if len(self.newAssistTrophyPile) == 0:
             self.newAssistTrophyPile = self.usedAssistTrophyPile.copy()
             self.usedAssistTrophyPile = []
@@ -41,25 +56,26 @@ class cardStacks:
                 allPlayers[playerIndex].money += 200
             else:
                 allPlayers[playerIndex].currentSpace = self.spaces[len(self.spaces)-1]
-            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
+            allPlayers[playerIndex].getNewBoardPos(self.surface, allPlayers[playerIndex], playerIndex, allPlayers, self, activePlayer, roll)
             print("1")
         elif selectedCard.text == "Advance to GO (Collect $200)":
             allPlayers[playerIndex].currentSpace = self.spaces[0]
             allPlayers[playerIndex].money += 200
+            allPlayers[playerIndex].getNewBoardPos(self.surface, allPlayers[playerIndex], playerIndex, allPlayers, self, activePlayer, roll)
             print("2")
         elif selectedCard.text == "Advance to Fox. If you pass GO, collect $200":
             for i in range(24, 40):
                 if allPlayers[playerIndex].currentSpace == self.spaces[i]:
                     allPlayers[playerIndex].money += 200
             allPlayers[playerIndex].currentSpace = self.spaces[24]
-            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
+            allPlayers[playerIndex].getNewBoardPos(self.surface, allPlayers[playerIndex], playerIndex, allPlayers, self, activePlayer, roll)
             print("3")
         elif selectedCard.text == "Advance to Jigglypuff. If you pass GO, collect $200":
             for i in range(11, 40):
                 if allPlayers[playerIndex].currentSpace == self.spaces[i]:
                     allPlayers[playerIndex].money += 200
             allPlayers[playerIndex].currentSpace = self.spaces[11]
-            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
+            allPlayers[playerIndex].getNewBoardPos(self.surface, allPlayers[playerIndex], playerIndex, allPlayers, self, activePlayer, roll)
             print("4")
         elif selectedCard.text == "Advance to the nearest Fire Emblem Character. If owned, pay owner double rent.":
             origPos = self.spaces.index(allPlayers[playerIndex].currentSpace)
@@ -67,15 +83,15 @@ class cardStacks:
             if origPos > newPos:
                 allPlayers[playerIndex].money += 200
             allPlayers[playerIndex].currentSpace = self.findSpace(allPlayers[playerIndex].currentSpace.nearestFE)
-            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
+            allPlayers[playerIndex].getNewBoardPos(self.surface, allPlayers[playerIndex], playerIndex, allPlayers, self, activePlayer, roll)
             print("5")
-        elif selectedCard.text == "Advance to the nearest Retro Character. If owned, pay owner ten times your dice roll.":
+        elif selectedCard.text == "Advance to the nearest Retro Character. If owned, pay 10X your dice roll.":
             origPos = self.spaces.index(allPlayers[playerIndex].currentSpace)
             newPos = self.spaces.index(self.findSpace(allPlayers[playerIndex].currentSpace.nearestRetro))
             if origPos > newPos:
                 allPlayers[playerIndex].money += 200
             allPlayers[playerIndex].currentSpace = self.findSpace(allPlayers[playerIndex].currentSpace.nearestRetro)
-            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
+            allPlayers[playerIndex].getNewBoardPos(self.surface, allPlayers[playerIndex], playerIndex, allPlayers, self, activePlayer, roll)
             print("6")
         elif selectedCard.text == "Bank pays you dividend of $50":
             allPlayers[playerIndex].money += 50
@@ -86,17 +102,18 @@ class cardStacks:
         elif selectedCard.text == "Go back 3 spaces":
             allPlayers[playerIndex].currentSpace = self.spaces[self.spaces.index(allPlayers[playerIndex].currentSpace) - 3]
             if allPlayers[playerIndex].currentSpace.spaceName == "PokeBall3":
-                self.drawPokeBall(activePlayer, allPlayers)
+                self.drawPokeBall(activePlayer, allPlayers, roll)
             elif allPlayers[playerIndex].currentSpace.spaceName == "Low Tier Tax":
                 activePlayer.money -= 200
             else:
-                allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
+                allPlayers[playerIndex].getNewBoardPos(self.surface, allPlayers[playerIndex], playerIndex, allPlayers, self, activePlayer, roll)
             print("9")
         elif selectedCard.text == "Go directly to jail. Do not pass GO, do not collect $200.":
             allPlayers[playerIndex].currentSpace = self.findSpace("Jail")
+            allPlayers[playerIndex].getNewBoardPos(self.surface, allPlayers[playerIndex], playerIndex, allPlayers, self, activePlayer, roll)
             allPlayers[playerIndex].inJail = True
             print("10")
-        elif selectedCard.text == "Software update. For each house, pay $25. For each hotel, pay $100":
+        elif selectedCard.text == "Software update. Pay $25 per house, $100 per hotel":
             cost = 0
             for property in allPlayers[playerIndex].properties:
                 if property.numHouses == 5:
@@ -110,27 +127,29 @@ class cardStacks:
             print("12")
         elif selectedCard.text == "Advance to Marth. If you pass GO, collect $200":
             origPos = self.spaces.index(allPlayers[playerIndex].currentSpace)
-            #newPos = spaces.index(self.findSpace(allPlayers[playerIndex].currentSpace.nearestRetro, spaces))
             if origPos > 5:
                 allPlayers[playerIndex].money += 200
             allPlayers[playerIndex].currentSpace = self.findSpace("Marth")
-            allPlayers[playerIndex].currentSpace.propertyAction(activePlayer, self.surface, roll)
+            allPlayers[playerIndex].getNewBoardPos(self.surface, allPlayers[playerIndex], playerIndex, allPlayers, self, activePlayer, roll)
             print("13")
-        elif selectedCard.text == "Your faulty adapter broke everyone's controllers. Pay everyone $50":
+        elif selectedCard.text == "Your faulty adapter broke everyone's controllers. Pay everyone $50": 
             for player in allPlayers:
                 if player != activePlayer:
                     player.money += 50
-                    allPlayers[playerIndex] -= 50
+                    allPlayers[playerIndex].money -= 50
             print("14")
         elif selectedCard.text == "You won a regional! Collect $150.":
             allPlayers[playerIndex].money += 150
             print("15")
+        gw.createBoard(self.smallFont, allPlayers, self, None)
+        self.surface.blit(imgMod.space_modifier("roll" +str(roll[0])+ ".jpg", 60, 60, 0), (400, 300))            
+        self.surface.blit(imgMod.space_modifier("roll" +str(roll[1])+ ".jpg", 60, 60, 0), (500, 300)) 
         messageText = self.font.render(selectedCard.text, True, self.BLACK)
         textRect = messageText.get_rect()
-        textRect.center = (500, 750)
+        textRect.center = (350, 750)
         buttonText = self.smallFont.render("OK", True, self.BLACK)
         buttonRect = buttonText.get_rect()
-        buttonRect.center = (500, 800)
+        buttonRect.center = (350, 800)
         self.surface.blit(buttonText, buttonRect)
         self.surface.blit(messageText, textRect)
         pygame.display.update()
@@ -148,15 +167,14 @@ class cardStacks:
                         isDisplayed = False
                         return
 
-
-        
-
-    def drawPokeBall(self, activePlayer, allPlayers):
+    def drawPokeBall(self, activePlayer, allPlayers, roll):
         playerIndex = -1
         for i in range(len(allPlayers)):
             if activePlayer == allPlayers[i]:
                 playerIndex = i
                 break
+        gw = gameWindows(self.surface)
+        imgMod = ImageModifier()
 
         selectedCard = self.newPokeBallPile.pop(randint(0, len(self.newPokeBallPile) - 1))
         self.usedPokeBallPile.append(selectedCard)
@@ -208,7 +226,7 @@ class cardStacks:
         elif selectedCard.text == "Got to Elite Smash with your first character. Collect $25.":
             allPlayers[playerIndex].money += 25
             print("-13")
-        elif selectedCard.text == "Pay out tournament prize pot. Pay $40 per house & $115 per hotel.":
+        elif selectedCard.text == "Pay out tournament prize pot. Pay $40 per house, $115 per hotel.":
             cost = 0
             for property in allPlayers[playerIndex].properties:
                 if property.numHouses == 5:
@@ -224,15 +242,17 @@ class cardStacks:
             allPlayers[playerIndex].money += 100 
             print("-16")
 
+        gw.createBoard(self.smallFont, allPlayers, self, None)
+        self.surface.blit(imgMod.space_modifier("roll" +str(roll[0])+ ".jpg", 60, 60, 0), (400, 300))            
+        self.surface.blit(imgMod.space_modifier("roll" +str(roll[1])+ ".jpg", 60, 60, 0), (500, 300)) 
         messageText = self.font.render(selectedCard.text, True, self.BLACK)
         textRect = messageText.get_rect()
-        textRect.center = (500, 700)
+        textRect.center = (350, 750)
         buttonText = self.smallFont.render("OK", True, self.BLACK)
         buttonRect = buttonText.get_rect()
-        buttonRect.center = (500, 800)
+        buttonRect.center = (350, 800)
         self.surface.blit(buttonText, buttonRect)
         self.surface.blit(messageText, textRect)
-        print(buttonRect.x, " ", buttonRect.y, " ", buttonRect.width, " ", buttonRect.height)
         pygame.display.update()
         isDisplayed = True
 
@@ -247,6 +267,7 @@ class cardStacks:
                         print("bruh4")
                         isDisplayed = False
                         return
+    
 
     
             

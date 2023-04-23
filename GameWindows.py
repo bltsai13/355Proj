@@ -9,13 +9,13 @@ class gameWindows:
     def playerSelectWindow(self):
         titleFont = pygame.font.SysFont(None, 40)
         title = titleFont.render("Click Number of Players", True, self.WHITE)
-        titleRect = title.get_rect(center = (500, 100))
-        normalFont = pygame.font.SysFont(None, 25)
+        titleRect = title.get_rect(center = (250, 100))
+        normalFont = pygame.font.SysFont(None, 24)
 
-        buttonDimensions = (75, 75)
+        buttonDimensions = (50, 50)
         buttonPadding = 25
         buttonArea = 3 * (buttonDimensions[0] + buttonPadding)
-        startPos = (425 - buttonArea /2, 300)
+        startPos = (175 - buttonArea /2, 150)
 
         options = []
         for i in range(2,5):
@@ -51,8 +51,8 @@ class gameWindows:
             pygame.time.Clock().tick(60)
 
     def playerNamesScreen(self, num_players):
-        font = pygame.font.SysFont(None, 25)
-        input_box_rect = pygame.Rect(250, 333, 500, 50)
+        font = pygame.font.SysFont(None, 20)
+        input_box_rect = pygame.Rect(125, 150, 250, 50)
         input_box_color = self.WHITE
         input_text_color = self.BLACK
         input_text = ""
@@ -60,7 +60,7 @@ class gameWindows:
         namesAdded = []
 
         # Set up the submit button
-        submit_button_rect = pygame.Rect(450, 666, 100, 50)
+        submit_button_rect = pygame.Rect(200, 225, 100, 50)
         submit_button_color = pygame.Color("green")
 
         # Set up the loop
@@ -79,6 +79,7 @@ class gameWindows:
                         namesAdded.append(input_text)
                         if len(namesAdded) == num_players:
                             running = False
+                            print("returning from function")
                             return namesAdded
                 elif event.type == pygame.KEYDOWN:
                     if input_active:
@@ -93,6 +94,11 @@ class gameWindows:
             self.screen.fill(pygame.Color("gray"))
 
             # Render the input box
+            #Text
+            topText = font.render("Enter a name and click Submit for each player", True, (0,0,0))
+            topTextRect = topText.get_rect()
+            topTextRect.center = (250, 75)
+            self.screen.blit(topText, topTextRect)
             input_box_surf = pygame.Surface(input_box_rect.size)
             input_box_surf.fill(input_box_color)
             input_box_surf.set_alpha(200)
@@ -112,9 +118,10 @@ class gameWindows:
 
         pygame.quit()
         
-    def createBoard(self, font):
+    def createBoard(self, font, players, drawPiles, activePlayer):
         imageModifier = ImageModifier()
         BLACK = (0, 0, 0)
+        WHITE = (255, 255, 255)
         BROWN = (165, 42, 42)
         LIGHTBLUE = (168, 255, 255)
         MAGENTA = (250, 45, 208)
@@ -188,3 +195,115 @@ class gameWindows:
         self.screen.blit(imageModifier.space_modifier('pyra.png', 70, 105, 90), (885, 625))
         self.screen.blit(imageModifier.space_modifier('steve.png', 70, 115, 90), (870, 705))
         self.screen.blit(imageModifier.space_modifier('mythra.png', 70, 105, 90), (885, 785))
+        imageModifier.combineTextAndImage(self.screen, 'marth.png', 70, 75, font, 'Marth', '$200', (500, 885), (500, 985), (465, 895))
+        imageModifier.combineTextAndImage(self.screen, 'dkFace.png', 60, 75, font, 'Low Tier Tax', 'Pay $200', (580, 890), (575, 985), (550, 895))
+        
+        self.screen.blit(imageModifier.space_modifier('monopolyCenter.png', 720, 720, 0), (140, 140))
+        self.screen.blit(imageModifier.space_modifier('goToJail.png', 138, 138, 0), (860, 0))
+        self.screen.blit(imageModifier.space_modifier('go.png', 140, 140, 0), (860, 860))
+        self.screen.blit(imageModifier.space_modifier('freeParking.png', 140, 140, 0), (0, 0))
+        self.screen.blit(imageModifier.space_modifier('jail.png', 140, 140, 0), (0, 860))
+        self.screen.blit(imageModifier.space_modifier('assistTrophyWithText.png', 70, 85, 0), (305, 895))
+        self.screen.blit(pygame.transform.rotate(imageModifier.space_modifier('assistTrophyWithText.png', 70, 85, 0), 180), (225, 30))
+        self.screen.blit(pygame.transform.rotate(imageModifier.space_modifier('assistTrophyWithText.png', 70, 85, 0), 90), (885, 545))
+        self.screen.blit(imageModifier.space_modifier('pokeBallWithText.png', 65, 80, 0), (705, 890))
+        self.screen.blit(pygame.transform.rotate(imageModifier.space_modifier('pokeBallWithText.png', 65, 80, 0), 90), (880, 310))
+        self.screen.blit(pygame.transform.rotate(imageModifier.space_modifier('pokeBallWithText.png', 65, 80, 0), 270), (40, 310))
+        
+        pygame.draw.rect(self.screen, WHITE, [160, 420, 150, 75])
+        p1Text = font.render(players[0].playerName, True, BLACK)
+        p1Cash = font.render("Cash: " + str(players[0].money), True, BLACK)
+        self.screen.blit(p1Text, (170, 430))
+        self.screen.blit(p1Cash, (170, 450))       
+        pygame.draw.rect(self.screen, WHITE, [700, 420, 150, 75])
+        p2Text = font.render(players[1].playerName, True, BLACK)
+        self.screen.blit(p2Text, (710, 430))
+        p2Cash = font.render("Cash: " + str(players[1].money), True, BLACK)
+        self.screen.blit(p2Cash, (710, 450))
+        if len(players) >= 3:
+            pygame.draw.rect(self.screen, WHITE, [160, 500, 150, 75])
+            p3Text = font.render(players[2].playerName, True, BLACK)
+            p3Cash = font.render("Cash: " + str(players[2].money), True, BLACK)
+            self.screen.blit(p3Text, (170, 510))
+            self.screen.blit(p3Cash, (170, 530))
+            if len(players) >= 4:
+                pygame.draw.rect(self.screen, WHITE, [700, 500, 150, 75])
+                p4Text = font.render(players[3].playerName, True, BLACK)
+                self.screen.blit(p4Text, (710, 510))
+                p4Cash = font.render("Cash: " + str(players[3].money), True, BLACK)
+                self.screen.blit(p4Cash, (710, 530))
+        players[0].getNewBoardPos(self.screen, players[0], 0, players, drawPiles, activePlayer, (0,0))
+        players[1].getNewBoardPos(self.screen, players[1], 1, players, drawPiles, activePlayer, (0,0))
+        if len(players) >= 3:
+            players[2].getNewBoardPos(self.screen, players[2], 2, players, drawPiles, activePlayer, (0,0))
+            if len(players) == 4:
+                players[3].getNewBoardPos(self.screen, players[3], 3, players, drawPiles, activePlayer, (0,0))
+        posList = []
+        posList.append([860, 860, 140, 140])
+        for i in range(8,-1, -1):
+            posList.append([140 + i*80, 860, 80, 140])
+        posList.append([0, 860, 140, 140])
+        for i in range(8, -1, -1):
+            posList.append([0, 140+80*i, 140, 80])
+        posList.append([0, 0, 140, 140])
+        for i in range(0, 9):
+            posList.append([140+i*80, 0, 80, 140])
+        posList.append([860, 0, 140, 140])
+        for i in range(0, 9):
+            posList.append([860, 140+i*80, 140, 80])
+        for i in range(len(players[0].spaces)):
+                players[0].spaces[i].setOwnerOutline(self.screen, players, posList[i])
+        for space in players[0].spaces:
+            rect = []
+            if space.spaceName == "Ganondorf":
+                rect = [782, 860, 76, 20]
+            elif space.spaceName == "Little Mac":
+                rect = [622, 860, 76, 20]
+            elif space.spaceName == "King Dedede":
+                rect = [382, 860, 76, 20]
+            elif space.spaceName == "Kirby":
+                rect = [222, 860, 76, 20]
+            elif space.spaceName == "Meta Knight":
+                rect = [142, 860, 76, 20]
+            elif space.spaceName == "Jigglypuff":
+                rect = [120, 782, 20, 76]
+            elif space.spaceName == "Mewtwo":
+                rect = [120, 622, 20, 76]
+            elif space.spaceName == "Incineroar":
+                rect = [120, 542, 20, 76]
+            elif space.spaceName == "Young Link":
+                rect = [120, 382, 20, 76]
+            elif space.spaceName == "Toon Link":
+                rect = [120, 222, 20, 76]
+            elif space.spaceName == "Link":
+                rect = [120, 142, 20, 76]
+            elif space.spaceName == "Falco":
+                rect = [142, 120, 76, 20]
+            elif space.spaceName == "Wolf":
+                rect = [302, 120, 76, 20]
+            elif space.spaceName == "Fox":
+                rect = [382, 120, 76, 20]
+            elif space.spaceName == "Samus":
+                rect = [542, 120, 76, 20]
+            elif space.spaceName == "Dark Samus":
+                rect = [622, 120, 76, 20]
+            elif space.spaceName == "Zero Suit Samus":
+                rect = [782, 120, 76, 20]
+            elif space.spaceName == "Ryu":
+                rect = [860, 142, 20, 76]
+            elif space.spaceName == "Terry":
+                rect = [860, 222, 20, 76]
+            elif space.spaceName == "Kazuya":
+                rect = [860, 382, 20, 76]
+            elif space.spaceName == "Pyra":
+                rect = [860, 622, 20, 76]
+            elif space.spaceName == "Mythra":
+                rect = [860, 782, 20, 76]
+            if rect != []:
+                space.setHouses(self.screen, rect)
+        pygame.display.update()
+            
+        
+        
+        
+        
