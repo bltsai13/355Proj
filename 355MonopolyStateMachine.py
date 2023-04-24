@@ -71,6 +71,10 @@ while gaming:
             pygame.quit()
             exit()
         elif event.type == KEYDOWN:
+            for player in players:
+                if player.isBankrupt == True:
+                    pygame.quit()
+                    exit()
             gameWindows.createBoard(font, players, drawPiles, activePlayer)
             
             for i in range(len(spaces)):
