@@ -83,9 +83,9 @@ class gameWindows:
                             return namesAdded
                 elif event.type == pygame.KEYDOWN:
                     if input_active:
-                        if event.key == pygame.K_RETURN:
-                            print("User entered:", input_text)
-                        elif event.key == pygame.K_BACKSPACE:
+                        #if event.key == pygame.K_RETURN:
+                        #    print("User entered:", input_text)
+                        if event.key == pygame.K_BACKSPACE:
                             input_text = input_text[:-1]
                         else:
                             input_text += event.unicode
@@ -113,7 +113,7 @@ class gameWindows:
             submit_text_rect = submit_text_surf.get_rect(center=submit_button_rect.center)
             self.screen.blit(submit_text_surf, submit_text_rect)
 
-            pygame.display.flip()
+            pygame.display.update()
 
         pygame.quit()
         
