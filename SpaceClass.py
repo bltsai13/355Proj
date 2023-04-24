@@ -155,7 +155,7 @@ class Space():
                                     rect = [860, 782, 20, 76]
                                 self.setHouses(board, rect)
                                 return
-            elif((self.owner != activePlayer) & (self.isMortgaged == False)):
+            elif(((self.owner != activePlayer) & (self.owner != None)) & (self.isMortgaged == False)):
                 if ((self.spaceName == "Pac Man") or (self.spaceName == "Mr Game & Watch")):
                     if ((self.owner.calcNumUtils() == 2)):
                         rent = 10 * (roll[0] + roll[1])
@@ -184,31 +184,61 @@ class Space():
                         rent = 200
                         activePlayer.money -= 200
                         self.owner.money += 200               
-                else:
+                else:                        
                     if self.numHouses == 0:
-                        rent = self.baseRent
-                        activePlayer.money -= self.baseRent
-                        self.owner.money += self.baseRent
+                        if self.partOfMonopoly():
+                            rent = self.baseRent * 2
+                            activePlayer.money -= (self.baseRent * 2)
+                            self.owner.money += (self.baseRent * 2)
+                        else:
+                            rent = self.baseRent
+                            activePlayer.money -= self.baseRent
+                            self.owner.money += self.baseRent
                     elif self.numHouses == 1:
-                        rent = self.rent1House
-                        activePlayer.money -= self.rent1House
-                        self.owner.money += self.rent1House
+                        if self.partOfMonopoly():
+                            rent = self.rent1House * 2
+                            activePlayer.money -= (self.rent1House * 2)
+                            self.owner.money += (self.rent1House * 2)
+                        else:
+                            rent = self.rent1House
+                            activePlayer.money -= self.rent1House
+                            self.owner.money += self.rent1House
                     elif self.numHouses == 2:
-                        rent = self.rent2House
-                        activePlayer.money -= self.rent2House
-                        self.owner.money += self.rent2House
+                        if self.partOfMonopoly():
+                            rent = self.rent2House * 2
+                            activePlayer.money -= (self.rent2House * 2)
+                            self.owner.money += (self.rent2House * 2)
+                        else:
+                            rent = self.rent2House
+                            activePlayer.money -= self.rent2House
+                            self.owner.money += self.rent2House
                     elif self.numHouses == 3:
-                        rent = self.rent3House
-                        activePlayer.money -= self.rent3House
-                        self.owner.money += self.rent3House
+                        if self.partOfMonopoly():
+                            rent = self.rent3House * 2
+                            activePlayer.money -= (self.rent3House * 2)
+                            self.owner.money += (self.rent3House * 2)
+                        else:
+                            rent = self.rent3House
+                            activePlayer.money -= self.rent3House
+                            self.owner.money += self.rent3House
                     elif self.numHouses == 4:
-                        rent = self.rent4House
-                        activePlayer.money -= self.rent4House
-                        self.owner.money += self.rent4House
+                        if self.partOfMonopoly():
+                            rent = self.rent4House * 2
+                            activePlayer.money -= (self.rent4House * 2)
+                            self.owner.money += (self.rent4House * 2)
+                        else:
+                            rent = self.rent4House
+                            activePlayer.money -= self.rent4House
+                            self.owner.money += self.rent4House
                     elif self.numHouses == 5:
-                        rent = self.rentHotel
-                        activePlayer.money -= self.rentHotel
-                        self.owner.money += self.rentHotel
+                        if self.partOfMonopoly():
+                            rent = self.rentHotel * 2
+                            activePlayer.money -= (self.rentHotel * 2)
+                            self.owner.money += (self.rentHotel * 2)
+                        else:
+                            rent = self.rentHotel
+                            activePlayer.money -= self.rentHotel
+                            self.owner.money += self.rentHotel
                 messageText = font.render(activePlayer.playerName + " paid $" + str(rent) + " to " + self.owner.playerName, True, self.BLACK)
                 textRect = messageText.get_rect()
                 textRect.center = (350, 750)
@@ -236,14 +266,116 @@ class Space():
                 board.blit(imgMod.space_modifier('hotel.jpg', houseWidth, rect[3], 0), (rect[0], rect[1]))
             else:
                 for i in range(self.numHouses):
-                    board.blit(imgMod.space_modifier('house.jpg', houseWidth, rect[3], 0), (rect[0] + houseWidth * i, rect[1]))
+                    if i == 0:
+                        board.blit(imgMod.space_modifier('house.jpg', houseWidth, rect[3], 0), (rect[0] + houseWidth * i, rect[1]))
+                    else:
+                        board.blit(imgMod.space_modifier('house.jpg', houseWidth, rect[3], 0), (rect[0] + houseWidth * i + 5, rect[1]))
         elif self.spaceName in ["Jigglypuff", "Mewtwo", "Incineroar", "Young Link", "Toon Link", "Link", "Ryu", "Terry", "Kazuya", "Pyra", "Mythra"]:
             houseHeight = rect[3]/4
             if self.numHouses == 5:
-                board.blit(imgMod.space_modifier('hotel.jpg', rect[2], rect[3], 0), (rect[0], rect[1]))
+                board.blit(imgMod.space_modifier('hotel.jpg', rect[2], houseHeight, 0), (rect[0], rect[1]))
             else:
                 for i in range(self.numHouses):
-                    board.blit(imgMod.space_modifier('house.jpg', rect[2], rect[3], 0), (rect[0], rect[1] + houseHeight * i))
+                    if i == 0:
+                        board.blit(imgMod.space_modifier('house.jpg', rect[2], houseHeight, 0), (rect[0], rect[1] + houseHeight * i))
+                    else:
+                        board.blit(imgMod.space_modifier('house.jpg', rect[2], houseHeight, 0), (rect[0], rect[1] + houseHeight * i))
+                        
+    def partOfMonopoly(self):
+        check = 0
+        if self.spaceName in ["Ganondorf", "Little Mac"]:
+            for space in self.owner.properties:
+                if space.propertyName == "Ganondorf":
+                    check += 1
+                elif space.propertyName == "Little Mac":
+                    check += 1
+            if check == 2:
+                return True
+            else: 
+                return False
+        elif self.spaceName in ["King Dedede", "Kirby", "Meta Knight"]:
+            for space in self.owner.properties:
+                if space.propertyName == "Meta Knight":
+                    check += 1
+                elif space.propertyName == "Kirby":
+                    check += 1
+                elif space.propertyName == "King Dedede":
+                    check += 1
+            if check == 3:
+                return True
+            else: 
+                return False
+        elif self.spaceName in ["Jigglypuff", "Mewtwo", "Incineroar"]:
+            for space in self.owner.properties:
+                if space.propertyName == "Jigglypuff":
+                    check += 1
+                elif space.propertyName == "Mewtwo":
+                    check += 1
+                elif space.propertyName == "Incineroar":
+                    check += 1
+            if check == 3:
+                return True
+            else: 
+                return False
+        elif self.spaceName in ["Young Link", "Toon Link", "Link"]:
+            for space in self.owner.properties:
+                if space.propertyName == "Young Link":
+                    check += 1
+                elif space.propertyName == "Toon Link":
+                    check += 1
+                elif space.propertyName == "Link":
+                    check += 1
+            if check == 3:
+                return True
+            else: 
+                return False
+        elif self.spaceName in ["Falco", "Wolf", "Fox"]:
+            for space in self.owner.properties:
+                if space.propertyName == "Falco":
+                    check += 1
+                elif space.propertyName == "Wolf":
+                    check += 1
+                elif space.propertyName == "Fox":
+                    check += 1
+            if check == 3:
+                return True
+            else: 
+                return False
+        elif self.spaceName in ["Samus", "Dark Samus", "Zero Suit Samus"]:
+            for space in self.owner.properties:
+                if space.propertyName == "Samus":
+                    check += 1
+                elif space.propertyName == "Dark Samus":
+                    check += 1
+                elif space.propertyName == "Zero Suit Samus":
+                    check += 1
+            if check == 3:
+                return True
+            else: 
+                return False
+        elif self.spaceName in ["Ryu", "Ken", "Kazuya"]:
+            for space in self.owner.properties:
+                if space.propertyName == "Ryu":
+                    check += 1
+                elif space.propertyName == "Ken":
+                    check += 1
+                elif space.propertyName == "Kazuya":
+                    check += 1
+            if check == 3:
+                return True
+            else: 
+                return False
+        else:
+            for space in self.owner.properties:
+                if space.propertyName == "Pyra":
+                    check += 1
+                elif space.propertyName == "Mythra":
+                    check += 1
+            if check == 2:
+                return True
+            else: 
+                return False
+                    
         
             
 

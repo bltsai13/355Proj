@@ -5,7 +5,7 @@ import pygame
 from GameWindows import gameWindows
 class cardStacks:
     def __init__(self, numPlayers, spaces, surface):
-        self.newAssistTrophyPile = [Card("Advance to Mythra, if you pass GO collect $200"), Card("Advance to GO (Collect $200)"), Card("Advance to Fox. If you pass GO, collect $200"), Card("Advance to Jigglypuff. If you pass GO, collect $200"), Card("Advance to the nearest Fire Emblem Character. If owned, pay owner double rent."), Card("Advance to the nearest Fire Emblem Character. If owned, pay owner double rent."), Card("Advance to the nearest Retro Character. If owned, pay 10X dice roll."), Card("Bank pays you dividend of $50"), Card("Get out of jail free"), Card("Go back 3 spaces"), Card("Go directly to jail. Do not pass GO, do not collect $200."), Card("Software update. Pay $25 per house, $100 per hotel"), Card("Tournament fee, pay $15"), Card("Advance to Marth. If you pass GO, collect $200"), Card("Your faulty adapter broke everyone's controllers. Pay everyone $50"), Card("You won a regional! Collect $150.")]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        self.newAssistTrophyPile = [Card("Advance to Mythra, if you pass GO collect $200"), Card("Advance to GO (Collect $200)"), Card("Advance to Fox. If you pass GO, collect $200"), Card("Advance to Jigglypuff. If you pass GO, collect $200"), Card("Advance to the nearest FE Character. If owned, pay owner double rent."), Card("Advance to the nearest FE Character. If owned, pay owner double rent."), Card("Advance to the nearest Retro Character. If owned, pay 10X dice roll."), Card("Bank pays you dividend of $50"), Card("Get out of jail free"), Card("Go back 3 spaces"), Card("Go directly to jail. Do not pass GO, do not collect $200."), Card("Software update. Pay $25 per house, $100 per hotel"), Card("Tournament fee, pay $15"), Card("Advance to Marth. If you pass GO, collect $200"), Card("Your faulty adapter broke everyone's controllers. Pay everyone $50"), Card("You won a regional! Collect $150.")]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
         self.usedAssistTrophyPile = []
         self.newPokeBallPile = [Card("Advance to GO (Collect $200)"), Card("Win a major. Collect $200."), Card("Lose a money match. Pay $50"), Card("Your income from your combo video came in. Collect $50"), Card("Get out of jail free"), Card("Go directly to jail. Do not pass GO, do not collect $200"), Card("Win a major side bracket. Collect $100"), Card("Refund Steve & Kazuya DLC after they got banned. Collect $20"), Card("It's your birthday. Collect $10 from every player."), Card("Win a giveaway. Collect $100"), Card("Get caught throwing a crab in a tournament. Pay $100"), Card("Buy a new copy of Super Smash Bros Ultimate. Pay $50"), Card("Got to Elite Smash with your first character. Collect $25."), Card("Pay out tournament prize pot. Pay $40 per house, $115 per hotel."), Card("You placed in top 8 at a local. Collect $10"), Card("You got sponsored! Collect $100")]
         self.usedPokeBallPile = []
@@ -41,10 +41,10 @@ class cardStacks:
         self.surface.blit(imgMod.space_modifier("roll" +str(roll[1])+ ".jpg", 60, 60, 0), (500, 300)) 
         messageText = self.font.render(selectedCard.text, True, self.BLACK)
         textRect = messageText.get_rect()
-        textRect.center = (350, 750)
+        textRect.center = (375, 750)
         buttonText = self.smallFont.render("OK", True, self.BLACK)
         buttonRect = buttonText.get_rect()
-        buttonRect.center = (350, 800)
+        buttonRect.center = (375, 800)
         self.surface.blit(buttonText, buttonRect)
         self.surface.blit(messageText, textRect)
         pygame.display.update()
@@ -77,7 +77,7 @@ class cardStacks:
             allPlayers[playerIndex].currentSpace = self.spaces[11]
             allPlayers[playerIndex].getNewBoardPos(self.surface, allPlayers[playerIndex], playerIndex, allPlayers, self, activePlayer, roll)
             print("4")
-        elif selectedCard.text == "Advance to the nearest Fire Emblem Character. If owned, pay owner double rent.":
+        elif selectedCard.text == "Advance to the nearest FE Character. If owned, pay owner double rent.":
             origPos = self.spaces.index(allPlayers[playerIndex].currentSpace)
             newPos = self.spaces.index(self.findSpace(allPlayers[playerIndex].currentSpace.nearestFE))
             if origPos > newPos:
