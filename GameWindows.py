@@ -30,7 +30,7 @@ class gameWindows:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
+                    exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     for button_rect, num_players in options:
@@ -71,7 +71,7 @@ class gameWindows:
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
-                    quit()
+                    exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # Check if submit button was clicked
                     if submit_button_rect.collidepoint(event.pos):

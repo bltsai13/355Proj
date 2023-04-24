@@ -60,7 +60,10 @@ class Space():
 
             while isDisplayed:
                 for event in pygame.event.get():
-                    if event.type == pygame.MOUSEBUTTONDOWN:
+                    if (event.type == pygame.QUIT):
+                        pygame.quit()
+                        exit()
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
                         if buttonRect.collidepoint(event.pos):
                             print("bruh2")
                             isDisplayed = False
@@ -89,7 +92,10 @@ class Space():
                 pygame.display.update()
                 while isDisplayed:
                     for event in pygame.event.get():
-                        if event.type == pygame.MOUSEBUTTONDOWN:
+                        if (event.type == pygame.QUIT):
+                            pygame.quit()
+                            exit()
+                        elif event.type == pygame.MOUSEBUTTONDOWN:
                             if buttonRect.collidepoint(event.pos):
                                 print("bruh2")
                                 isDisplayed = False

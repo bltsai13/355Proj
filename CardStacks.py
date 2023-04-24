@@ -157,10 +157,9 @@ class cardStacks:
 
         while isDisplayed:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    print("bruh")
-                    isDisplayed = False
-                    return
+                if (event.type == pygame.QUIT):
+                    pygame.quit()
+                    exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if buttonRect.collidepoint(event.pos):
                         print("bruh2")
@@ -257,10 +256,9 @@ class cardStacks:
 
         while isDisplayed:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    print("bruh3")
-                    isDisplayed = False
-                    return
+                if (event.type == pygame.QUIT):
+                    pygame.quit()
+                    exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if buttonRect.collidepoint(event.pos):
                         print("bruh4")
