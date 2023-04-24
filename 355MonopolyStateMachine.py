@@ -26,7 +26,6 @@ pygame.init()
 setupWindow = pygame.display.set_mode((500, 300))
 gameWindows = GameWindows.gameWindows(setupWindow)
 numPlayers = gameWindows.playerSelectWindow()
-print("Num Players is:" + str(numPlayers))
 players = []
 playerNames = gameWindows.playerNamesScreen(numPlayers)
 for i in range(numPlayers):
@@ -51,6 +50,19 @@ p4Img = pygame.transform.scale(p4Img, (20, 20))
 font = pygame.font.SysFont('timesnewroman.ttf', 16)
 smallFont = pygame.font.SysFont('timesnewroman.ttf', 13)
 imageModifier = ImageModifier()
+posList = []
+posList.append([860, 860, 140, 140])
+for i in range(8,-1, -1):
+    posList.append([140 + i*80, 860, 80, 140])
+posList.append([0, 860, 140, 140])
+for i in range(8, -1, -1):
+    posList.append([0, 140+80*i, 140, 80])
+posList.append([0, 0, 140, 140])
+for i in range(0, 9):
+    posList.append([140+i*80, 0, 80, 140])
+posList.append([860, 0, 140, 140])
+for i in range(0, 9):
+    posList.append([860, 140+i*80, 140, 80])
 gameWindows.createBoard(font, players, drawPiles, activePlayer)
 
 while gaming:
@@ -60,19 +72,6 @@ while gaming:
             exit()
         elif event.type == KEYDOWN:
             gameWindows.createBoard(font, players, drawPiles, activePlayer)
-            posList = []
-            posList.append([860, 860, 140, 140])
-            for i in range(8,-1, -1):
-                posList.append([140 + i*80, 860, 80, 140])
-            posList.append([0, 860, 140, 140])
-            for i in range(8, -1, -1):
-                posList.append([0, 140+80*i, 140, 80])
-            posList.append([0, 0, 140, 140])
-            for i in range(0, 9):
-                posList.append([140+i*80, 0, 80, 140])
-            posList.append([860, 0, 140, 140])
-            for i in range(0, 9):
-                posList.append([860, 140+i*80, 140, 80])
             
             for i in range(len(spaces)):
                 spaces[i].setOwnerOutline(monopolyBoard, players, posList[i])
@@ -84,7 +83,6 @@ while gaming:
                 if len(players) >= 3:
                     players[2].getNewBoardPos(monopolyBoard, players[2], 2, players, drawPiles, activePlayer, roll)
                     if len(players) == 4:
-                        print("test 4")
                         players[3].getNewBoardPos(monopolyBoard, players[3], 3, players, drawPiles, activePlayer, roll)
                 if activePlayer.money < 0:
                     activePlayer.isBankrupt = True
@@ -97,7 +95,7 @@ while gaming:
                             winner = player
                             max = netWorth
                     monopolyBoard.fill(WHITE)
-                    winnerText = font.render("The winner is " + winner.playerName + "!")
+                    winnerText = font.render("The winner is " + winner.playerName + " with a net worth of " + str(max) + "!", True, BLACK)
                     monopolyBoard.blit(winnerText, (500, 500))
                 
                 

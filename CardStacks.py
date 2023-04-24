@@ -41,10 +41,10 @@ class cardStacks:
         self.surface.blit(imgMod.space_modifier("roll" +str(roll[1])+ ".jpg", 60, 60, 0), (500, 300)) 
         messageText = self.font.render(selectedCard.text, True, self.BLACK)
         textRect = messageText.get_rect()
-        textRect.center = (375, 750)
+        textRect.center = (400, 750)
         buttonText = self.smallFont.render("OK", True, self.BLACK)
         buttonRect = buttonText.get_rect()
-        buttonRect.center = (375, 800)
+        buttonRect.center = (400, 800)
         self.surface.blit(buttonText, buttonRect)
         self.surface.blit(messageText, textRect)
         pygame.display.update()
@@ -146,10 +146,10 @@ class cardStacks:
         self.surface.blit(imgMod.space_modifier("roll" +str(roll[1])+ ".jpg", 60, 60, 0), (500, 300)) 
         messageText = self.font.render(selectedCard.text, True, self.BLACK)
         textRect = messageText.get_rect()
-        textRect.center = (350, 750)
+        textRect.center = (400, 750)
         buttonText = self.smallFont.render("OK", True, self.BLACK)
         buttonRect = buttonText.get_rect()
-        buttonRect.center = (350, 800)
+        buttonRect.center = (400, 800)
         self.surface.blit(buttonText, buttonRect)
         self.surface.blit(messageText, textRect)
         pygame.display.update()
@@ -181,7 +181,6 @@ class cardStacks:
         if len(self.newPokeBallPile) == 0:
             self.newPokeBallPile = self.usedPokeBallPile.copy()
             self.usedPokeBallPile = []
-
         if selectedCard.text == "Advance to GO (Collect $200)":
             allPlayers[playerIndex].currentSpace = self.spaces[0]
             allPlayers[playerIndex].money += 200
@@ -247,10 +246,10 @@ class cardStacks:
         self.surface.blit(imgMod.space_modifier("roll" +str(roll[1])+ ".jpg", 60, 60, 0), (500, 300)) 
         messageText = self.font.render(selectedCard.text, True, self.BLACK)
         textRect = messageText.get_rect()
-        textRect.center = (350, 750)
+        textRect.center = (400, 750)
         buttonText = self.smallFont.render("OK", True, self.BLACK)
         buttonRect = buttonText.get_rect()
-        buttonRect.center = (350, 800)
+        buttonRect.center = (400, 800)
         self.surface.blit(buttonText, buttonRect)
         self.surface.blit(messageText, textRect)
         pygame.display.update()

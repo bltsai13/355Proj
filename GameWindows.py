@@ -59,7 +59,7 @@ class gameWindows:
         input_active = True
         namesAdded = []
 
-        # Set up the submit button
+        #submit button
         submit_button_rect = pygame.Rect(200, 225, 100, 50)
         submit_button_color = pygame.Color("green")
 
@@ -94,7 +94,6 @@ class gameWindows:
             self.screen.fill(pygame.Color("gray"))
 
             # Render the input box
-            #Text
             topText = font.render("Enter a name and click Submit for each player", True, (0,0,0))
             topTextRect = topText.get_rect()
             topTextRect.center = (250, 75)

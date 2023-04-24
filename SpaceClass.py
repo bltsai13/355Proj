@@ -269,7 +269,7 @@ class Space():
                     if i == 0:
                         board.blit(imgMod.space_modifier('house.jpg', houseWidth, rect[3], 0), (rect[0] + houseWidth * i, rect[1]))
                     else:
-                        board.blit(imgMod.space_modifier('house.jpg', houseWidth, rect[3], 0), (rect[0] + houseWidth * i + 5, rect[1]))
+                        board.blit(imgMod.space_modifier('house.jpg', houseWidth, rect[3], 0), (rect[0] + houseWidth * i, rect[1]))
         elif self.spaceName in ["Jigglypuff", "Mewtwo", "Incineroar", "Young Link", "Toon Link", "Link", "Ryu", "Terry", "Kazuya", "Pyra", "Mythra"]:
             houseHeight = rect[3]/4
             if self.numHouses == 5:
@@ -285,9 +285,9 @@ class Space():
         check = 0
         if self.spaceName in ["Ganondorf", "Little Mac"]:
             for space in self.owner.properties:
-                if space.propertyName == "Ganondorf":
+                if space.spaceName == "Ganondorf":
                     check += 1
-                elif space.propertyName == "Little Mac":
+                elif space.spaceName == "Little Mac":
                     check += 1
             if check == 2:
                 return True
@@ -295,11 +295,11 @@ class Space():
                 return False
         elif self.spaceName in ["King Dedede", "Kirby", "Meta Knight"]:
             for space in self.owner.properties:
-                if space.propertyName == "Meta Knight":
+                if space.spaceName == "Meta Knight":
                     check += 1
-                elif space.propertyName == "Kirby":
+                elif space.spaceName == "Kirby":
                     check += 1
-                elif space.propertyName == "King Dedede":
+                elif space.spaceName == "King Dedede":
                     check += 1
             if check == 3:
                 return True
@@ -307,11 +307,11 @@ class Space():
                 return False
         elif self.spaceName in ["Jigglypuff", "Mewtwo", "Incineroar"]:
             for space in self.owner.properties:
-                if space.propertyName == "Jigglypuff":
+                if space.spaceName == "Jigglypuff":
                     check += 1
-                elif space.propertyName == "Mewtwo":
+                elif space.spaceName == "Mewtwo":
                     check += 1
-                elif space.propertyName == "Incineroar":
+                elif space.spaceName == "Incineroar":
                     check += 1
             if check == 3:
                 return True
@@ -319,11 +319,11 @@ class Space():
                 return False
         elif self.spaceName in ["Young Link", "Toon Link", "Link"]:
             for space in self.owner.properties:
-                if space.propertyName == "Young Link":
+                if space.spaceName == "Young Link":
                     check += 1
-                elif space.propertyName == "Toon Link":
+                elif space.spaceName == "Toon Link":
                     check += 1
-                elif space.propertyName == "Link":
+                elif space.spaceName == "Link":
                     check += 1
             if check == 3:
                 return True
@@ -331,11 +331,11 @@ class Space():
                 return False
         elif self.spaceName in ["Falco", "Wolf", "Fox"]:
             for space in self.owner.properties:
-                if space.propertyName == "Falco":
+                if space.spaceName == "Falco":
                     check += 1
-                elif space.propertyName == "Wolf":
+                elif space.spaceName == "Wolf":
                     check += 1
-                elif space.propertyName == "Fox":
+                elif space.spaceName == "Fox":
                     check += 1
             if check == 3:
                 return True
@@ -343,11 +343,11 @@ class Space():
                 return False
         elif self.spaceName in ["Samus", "Dark Samus", "Zero Suit Samus"]:
             for space in self.owner.properties:
-                if space.propertyName == "Samus":
+                if space.spaceName == "Samus":
                     check += 1
-                elif space.propertyName == "Dark Samus":
+                elif space.spaceName == "Dark Samus":
                     check += 1
-                elif space.propertyName == "Zero Suit Samus":
+                elif space.spaceName == "Zero Suit Samus":
                     check += 1
             if check == 3:
                 return True
@@ -355,11 +355,11 @@ class Space():
                 return False
         elif self.spaceName in ["Ryu", "Ken", "Kazuya"]:
             for space in self.owner.properties:
-                if space.propertyName == "Ryu":
+                if space.spaceName == "Ryu":
                     check += 1
-                elif space.propertyName == "Ken":
+                elif space.spaceName == "Ken":
                     check += 1
-                elif space.propertyName == "Kazuya":
+                elif space.spaceName == "Kazuya":
                     check += 1
             if check == 3:
                 return True
@@ -367,9 +367,9 @@ class Space():
                 return False
         else:
             for space in self.owner.properties:
-                if space.propertyName == "Pyra":
+                if space.spaceName == "Pyra":
                     check += 1
-                elif space.propertyName == "Mythra":
+                elif space.spaceName == "Mythra":
                     check += 1
             if check == 2:
                 return True

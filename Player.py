@@ -242,25 +242,47 @@ class Player:
         if ((thisPlayer == activePlayer) & (roll != (0,0))) :
             roll1 = "roll" +str(roll[0])+ ".jpg"
             roll2 = "roll" +str(roll[1])+ ".jpg"
+            BLACK = (0,0,0)
             if (thisPlayer.currentSpace.spaceName in ["AssistTrophy1", "AssistTrophy2", "AssistTrophy3"]):
                 drawPiles.drawAssistTrophy(thisPlayer, players, roll)
             elif (thisPlayer.currentSpace.spaceName in ["PokeBall1", "PokeBall2", "PokeBall3"]):
                 drawPiles.drawPokeBall(thisPlayer, players, roll)
             elif (thisPlayer.currentSpace.spaceName in ["Free Parking", "Jail", "Go to Jail", "Go"]):
-                print("Nothing happens!")
+                if thisPlayer.currentSpace.spaceName == "Free Parking":
+                    messageText = smallFont.render(activePlayer.playerName + " landed on Free Parking.", True, BLACK)
+                elif thisPlayer.currentSpace.spaceName == "Jail":
+                    messageText = smallFont.render(activePlayer.playerName + " is in jail!", True, BLACK)
+                elif thisPlayer.currentSpace.spaceName == "Go To Jail":
+                    messageText = smallFont.render(activePlayer.playerName + " went to jail!", True, BLACK)
+                else:
+                    messageText = smallFont.render(activePlayer.playerName + " landed on Go!", True, BLACK)
                 gw.createBoard(smallFont, players, drawPiles, None)
                 if roll != (0,0):
                     board.blit(imgMod.space_modifier(roll1, 60, 60, 0), (400, 300))            
                     board.blit(imgMod.space_modifier(roll2, 60, 60, 0), (500, 300)) 
+                textRect = messageText.get_rect()
+                textRect.center = (350, 750)
+                board.blit(messageText, textRect)
+                pygame.display.update() 
             elif (thisPlayer.currentSpace.spaceName == "DLC Tax"):
                 thisPlayer.money -= 100
                 gw.createBoard(smallFont, players, drawPiles, None)
                 board.blit(imgMod.space_modifier(roll1, 60, 60, 0), (400, 300))            
-                board.blit(imgMod.space_modifier(roll2, 60, 60, 0), (500, 300)) 
+                board.blit(imgMod.space_modifier(roll2, 60, 60, 0), (500, 300))
+                messageText = smallFont.render(activePlayer.playerName + " paid the DLC Tax!", True, BLACK)
+                textRect = messageText.get_rect()
+                textRect.center = (350, 750)
+                board.blit(messageText, textRect)
+                pygame.display.update() 
             elif (thisPlayer.currentSpace.spaceName == "Low Tier Tax"):
                 thisPlayer.money -= 200
                 gw.createBoard(smallFont, players, drawPiles, None)
                 board.blit(imgMod.space_modifier(roll1, 60, 60, 0), (400, 300))            
-                board.blit(imgMod.space_modifier(roll2, 60, 60, 0), (500, 300)) 
+                board.blit(imgMod.space_modifier(roll2, 60, 60, 0), (500, 300))
+                messageText = smallFont.render(activePlayer.playerName + " paid the Low Tier Tax!", True, BLACK)
+                textRect = messageText.get_rect()
+                textRect.center = (350, 750)
+                board.blit(messageText, textRect)
+                pygame.display.update() 
             else:
                 thisPlayer.currentSpace.propertyAction(thisPlayer, board, roll, players, drawPiles)
